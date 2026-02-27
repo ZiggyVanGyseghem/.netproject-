@@ -1,0 +1,119 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\weg van onedrive\\docker web v2\\web page correct\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|c:\\weg van onedrive\\docker web v2\\web page correct\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|c:\\weg van onedrive\\docker web v2\\web page correct\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|c:\\weg van onedrive\\docker web v2\\web page correct\\school\\schoolcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|solutionrelative:school\\schoolcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|c:\\weg van onedrive\\docker web v2\\web page correct\\school\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|solutionrelative:school\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|c:\\weg van onedrive\\docker web v2\\web page correct\\web page correct.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{5F699546-7086-4D6D-BDC5-FE5A797D89FD}|web page correct.csproj|solutionrelative:web page correct.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\weg van onedrive\\docker web v2\\web page correct\\school\\UserController.cs",
+              "RelativeDocumentMoniker": "school\\UserController.cs",
+              "ToolTip": "C:\\weg van onedrive\\docker web v2\\web page correct\\school\\UserController.cs",
+              "RelativeToolTip": "school\\UserController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-11T11:03:43.473Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SchoolContext.cs",
+              "DocumentMoniker": "C:\\weg van onedrive\\docker web v2\\web page correct\\school\\SchoolContext.cs",
+              "RelativeDocumentMoniker": "school\\SchoolContext.cs",
+              "ToolTip": "C:\\weg van onedrive\\docker web v2\\web page correct\\school\\SchoolContext.cs",
+              "RelativeToolTip": "school\\SchoolContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-06T09:24:29.743Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\weg van onedrive\\docker web v2\\web page correct\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\weg van onedrive\\docker web v2\\web page correct\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-06T09:23:53.54Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\weg van onedrive\\docker web v2\\web page correct\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\weg van onedrive\\docker web v2\\web page correct\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-06T08:26:37.642Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "web page correct.http",
+              "DocumentMoniker": "C:\\weg van onedrive\\docker web v2\\web page correct\\web page correct.http",
+              "RelativeDocumentMoniker": "web page correct.http",
+              "ToolTip": "C:\\weg van onedrive\\docker web v2\\web page correct\\web page correct.http",
+              "RelativeToolTip": "web page correct.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2026-02-04T10:52:41.928Z"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 43,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
