@@ -1,6 +1,0 @@
-@web_page_correct_HostAddress = http://localhost:5068
-
-GET {{web_page_correct_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
