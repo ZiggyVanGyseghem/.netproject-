@@ -50,3 +50,7 @@ appsettings.Development.json
 db_data/
 mysql_data/
 /db/config
+/OuderraadWielewaal/obj/Debug
+/OuderraadWielewaal/.vs/OuderraadWielewaal/CopilotIndices
+/OuderraadWielewaal/.vs/OuderraadWielewaal/CopilotIndices
+/OuderraadWielewaal/.vs/OuderraadWielewaal/v17

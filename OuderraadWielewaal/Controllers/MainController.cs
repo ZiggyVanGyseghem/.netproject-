@@ -4,8 +4,14 @@ namespace OuderraadWielewaal.Controllers
 {
     public class MainController : Controller
     {
-        // This action returns the starter page view
+        // Loads the Start Page
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        // Loads the Menu Page
+        public IActionResult Menu()
         {
             return View();
         }
