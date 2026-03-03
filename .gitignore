@@ -1,0 +1,52 @@
+# =========================
+# .NET Core / C#
+# =========================
+# Ignore build results and intermediate files
+bin/
+obj/
+
+# =========================
+# IDEs and Tooling
+# =========================
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Rider / IntelliJ
+.idea/
+*.sln.iml
+
+# =========================
+# Operating System
+# =========================
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =========================
+# Project Specific (Crucial!)
+# =========================
+# Keep your Mollie API keys and local database passwords safe!
+appsettings.Development.json
+*.env
+.env
+
+# If you map your local Docker database to a folder (so data persists), ignore that folder
+# e.g., if you have a folder called 'mysql_data' or 'db_data' in your project root:
+db_data/
+mysql_data/
+/db/config
