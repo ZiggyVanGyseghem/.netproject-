@@ -18,13 +18,13 @@
 
 \- \[x] Bepaal de database structuur (SQL/Tabellen) inclusief relaties en prijshistoriek
 
-\- \[ ] Maak de C# Entity Framework Core Modellen aan (Gebruikers, Rollen, Producten, Bestellingen, etc.)
+\- \[x] Maak de C# Entity Framework Core Modellen aan (Gebruikers, Rollen, Producten, Bestellingen, etc.)
 
-\- \[ ] Configureer de `AppDbContext` en connectiestring (appsettings.json)
+\- \[x] Configureer de `AppDbContext` en connectiestring (appsettings.json)
 
-\- \[ ] Voer de eerste EF Core Migration uit om de database fysiek aan te maken
+\- \[x] Voer de eerste EF Core Migration uit om de database fysiek aan te maken
 
-\- \[ ] Voeg wat testdata (seeding) toe voor tafels en een paar testproducten
+\- \[x] Voeg wat testdata (seeding) toe voor tafels en een paar testproducten
 
 
 
@@ -32,9 +32,9 @@
 
 \- \[x] Bouw de statische Startpagina en het statische Menu
 
-\- \[ ] \[cite\_start]\*\*Dynamisch Menu:\*\* Lees het unieke tafelnummer uit de URL (gescand via QR) en toon dit op het scherm \[cite: 8, 12]
+\- \[x] \[cite\_start]\*\*Dynamisch Menu:\*\* Lees het unieke tafelnummer uit de URL (gescand via QR) en toon dit op het scherm \[cite: 8, 12]
 
-\- \[ ] \[cite\_start]\*\*Dynamisch Assortiment:\*\* Haal de drank en versnaperingen rechtstreeks op uit de database \[cite: 13]
+\- \[x] \[cite\_start]\*\*Dynamisch Assortiment:\*\* Haal de drank en versnaperingen rechtstreeks op uit de database \[cite: 13]
 
 \- \[ ] \[cite\_start]\*\*Winkelmandje (Overzicht):\*\* Maak een dynamisch overzicht met eenheidsprijs, aantal, subtotaal en totaalprijs \[cite: 15, 16]
 
@@ -92,7 +92,7 @@
 
 \## Fase 8: Hosting \& Afronding
 
-\- \[ ] \[cite\_start]Host de database lokaal via een Docker omgeving (`docker-compose.yml`) \[cite: 48]
+\- \[X] \[cite\_start]Host de database lokaal via een Docker omgeving (`docker-compose.yml`) \[cite: 48]
 
 \- \[ ] \[cite\_start]Deploy de volledige website naar de cloud (bijv. Azure of vergelijkbare dienst) \[cite: 48]
 
