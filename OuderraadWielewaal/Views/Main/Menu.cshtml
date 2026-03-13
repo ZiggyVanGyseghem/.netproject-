@@ -1,44 +1,47 @@
-﻿@{
+﻿@model IEnumerable<OuderraadWielewaal.Models.Productdetail>
+    @using OuderraadWielewaal.Models
+
+    @{
     ViewData["Title"] = "Menu Bestellen";
-}
+    // Splits de database lijst op in dranken en snacks
+    var dranken = Model.Where(p => p.ProductType == ProductType.Drank);
+    var snacks = Model.Where(p => p.ProductType == ProductType.Versnapering);
+    }
 
-<div class="container mt-4">
-    <div class="alert alert-primary text-center shadow-sm" role="alert">
-        <h2 class="mb-0">Je bestelt voor <stron>Tafel 1</stron></h2>
-    </div>
+    <div class="container mt-4">
+        <div class="alert alert-primary text-center shadow-sm" role="alert">
+            <h2 class="mb-0">📍 Je bestelt voor <strong>Tafel @ViewBag.TafelNummer</strong></h2>
+        </div>
 
-    <h3 class="mt-5 border-bottom pb-2"> Dranken</h3>
-    <div class="row g-3">
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Cola</h5>
-                    <p class="card-text text-muted">€ 2.50</p>
-                    <button class="btn btn-outline-success w-100">+ Voeg toe</button>
+        <h3 class="mt-5 border-bottom pb-2">🥤 Dranken</h3>
+        <div class="row g-3">
+            @foreach (var drank in dranken)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@drank.Naam</h5>
+                        <p class="card-text text-muted">€ @drank.Prijs.ToString("0.00")</p>
+                        <button class="btn btn-outline-success w-100">+ Voeg toe</button>
+                    </div>
                 </div>
             </div>
+        }
         </div>
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Plat Water</h5>
-                    <p class="card-text text-muted">€ 2.00</p>
-                    <button class="btn btn-outline-success w-100">+ Voeg toe</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <h3 class="mt-5 border-bottom pb-2"> Versnaperingen</h3>
-    <div class="row g-3 mb-5">
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Chips Paprika</h5>
-                    <p class="card-text text-muted">€ 2.00</p>
-                    <button class="btn btn-outline-success w-100">+ Voeg toe</button>
+        <h3 class="mt-5 border-bottom pb-2">🍿 Versnaperingen</h3>
+        <div class="row g-3 mb-5">
+            @foreach (var snack in snacks)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@snack.Naam</h5>
+                        <p class="card-text text-muted">€ @snack.Prijs.ToString("0.00")</p>
+                        <button class="btn btn-outline-success w-100">+ Voeg toe</button>
+                    </div>
                 </div>
             </div>
+        }
         </div>
     </div>
-</div>

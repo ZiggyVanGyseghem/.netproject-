@@ -8,7 +8,7 @@ services:
      - ./db/config:/var/lib/mysql
      - ./db/init:/docker-entrypoint-initdb.d
     environment:
-     - MARIADB_DATABASE=school
+     - MARIADB_DATABASE=orw_bestellingen
      - MARIADB_ROOT_PASSWORD=root
      - TZ=Europe/Brussels
     restart: unless-stopped
