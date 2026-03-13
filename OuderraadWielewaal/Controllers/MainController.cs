@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using OuderraadWielewaal.Data;
 using System.Linq;
+using OuderraadWielewaal.Extensions;
+using OuderraadWielewaal.Models;
+using System.Collections.Generic;
 
 namespace OuderraadWielewaal.Controllers
 {
@@ -30,6 +33,67 @@ namespace OuderraadWielewaal.Controllers
 
             // Geef de lijst met producten mee aan de View
             return View(producten);
+        }
+
+        [HttpPost]
+        public IActionResult VoegToeAanMandje(int productId, int tafelId, int aantal = 1)
+        {
+            var product = _context.Productdetails.FirstOrDefault(p => p.ProductId == productId);
+            if (product == null) return NotFound();
+
+            var mandje = HttpContext.Session.GetObjectFromJson<List<WinkelmandItem>>("Winkelmandje") ?? new List<WinkelmandItem>();
+
+            var bestaandItem = mandje.FirstOrDefault(i => i.ProductId == productId);
+            if (bestaandItem != null)
+            {
+                // Tel het gekozen aantal op bij wat er al in het mandje zat!
+                bestaandItem.Aantal += aantal;
+            }
+            else
+            {
+                mandje.Add(new WinkelmandItem
+                {
+                    ProductId = product.ProductId,
+                    Naam = product.Naam,
+                    Prijs = product.Prijs,
+                    Aantal = aantal // Gebruik het gekozen aantal!
+                });
+            }
+
+            HttpContext.Session.SetObjectAsJson("Winkelmandje", mandje);
+            return RedirectToAction("Menu", new { tafelId = tafelId });
+        }
+        public IActionResult VerwijderUitMandje(int productId, int tafelId)
+        {
+            var mandje = HttpContext.Session.GetObjectFromJson<List<WinkelmandItem>>("Winkelmandje");
+
+            if (mandje != null)
+            {
+                // Zoek het product en verwijder het uit de lijst
+                var item = mandje.FirstOrDefault(i => i.ProductId == productId);
+                if (item != null)
+                {
+                    mandje.Remove(item);
+                    // Sla de geüpdatete lijst weer op
+                    HttpContext.Session.SetObjectAsJson("Winkelmandje", mandje);
+                }
+            }
+
+            // Stuur terug naar het winkelmandje
+            return RedirectToAction("Winkelmandje", new { tafelId = tafelId });
+        }
+
+        // Laadt de Winkelmandje pagina
+        public IActionResult Winkelmandje(int tafelId)
+        {
+            // Haal het mandje uit het geheugen (of maak een lege lijst als hij er niet is)
+            var mandje = HttpContext.Session.GetObjectFromJson<List<WinkelmandItem>>("Winkelmandje") ?? new List<WinkelmandItem>();
+
+            // Stuur het tafelnummer weer mee
+            ViewBag.TafelNummer = tafelId;
+
+            // Geef de lijst met items aan de pagina
+            return View(mandje);
         }
     }
 }

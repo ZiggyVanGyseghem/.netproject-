@@ -3,7 +3,6 @@
 
     @{
     ViewData["Title"] = "Menu Bestellen";
-    // Splits de database lijst op in dranken en snacks
     var dranken = Model.Where(p => p.ProductType == ProductType.Drank);
     var snacks = Model.Where(p => p.ProductType == ProductType.Versnapering);
     }
@@ -13,6 +12,12 @@
             <h2 class="mb-0">📍 Je bestelt voor <strong>Tafel @ViewBag.TafelNummer</strong></h2>
         </div>
 
+        <div class="d-flex justify-content-end mb-3">
+            <a asp-controller="Main" asp-action="Winkelmandje" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-warning shadow-sm btn-lg fw-bold">
+                🛒 Naar Winkelmandje
+            </a>
+        </div>
+
         <h3 class="mt-5 border-bottom pb-2">🥤 Dranken</h3>
         <div class="row g-3">
             @foreach (var drank in dranken)
@@ -20,9 +25,20 @@
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body text-center">
-                        <h5 class="card-title">@drank.Naam</h5>
-                        <p class="card-text text-muted">€ @drank.Prijs.ToString("0.00")</p>
-                        <button class="btn btn-outline-success w-100">+ Voeg toe</button>
+                        <h5 class="card-title fs-4">@drank.Naam</h5>
+                        <p class="card-text text-muted fs-5">€ @drank.Prijs.ToString("0.00")</p>
+
+                        <form asp-controller="Main" asp-action="VoegToeAanMandje" method="post">
+                            <input type="hidden" name="productId" value="@drank.ProductId" />
+                            <input type="hidden" name="tafelId" value="@ViewBag.TafelNummer" />
+
+                            <div class="input-group mt-3 mb-2">
+                                <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.nextElementSibling.stepDown()">-</button>
+                                <input type="number" name="aantal" class="form-control text-center fs-4 fw-bold" value="1" min="1" max="50">
+                                <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.previousElementSibling.stepUp()">+</button>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 btn-lg fw-bold">Toevoegen</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -36,12 +52,35 @@
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body text-center">
-                        <h5 class="card-title">@snack.Naam</h5>
-                        <p class="card-text text-muted">€ @snack.Prijs.ToString("0.00")</p>
-                        <button class="btn btn-outline-success w-100">+ Voeg toe</button>
+                        <h5 class="card-title fs-4">@snack.Naam</h5>
+                        <p class="card-text text-muted fs-5">€ @snack.Prijs.ToString("0.00")</p>
+
+                        <form asp-controller="Main" asp-action="VoegToeAanMandje" method="post">
+                            <input type="hidden" name="productId" value="@snack.ProductId" />
+                            <input type="hidden" name="tafelId" value="@ViewBag.TafelNummer" />
+
+                            <div class="input-group mt-3 mb-2">
+                                <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.nextElementSibling.stepDown()">-</button>
+                                <input type="number" name="aantal" class="form-control text-center fs-4 fw-bold" value="1" min="1" max="50">
+                                <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.previousElementSibling.stepUp()">+</button>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 btn-lg fw-bold">Toevoegen</button>
+                        </form>
                     </div>
                 </div>
             </div>
         }
         </div>
     </div>
+
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>

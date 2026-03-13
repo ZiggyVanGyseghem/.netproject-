@@ -1,0 +1,58 @@
+﻿@model List<OuderraadWielewaal.Models.WinkelmandItem>
+
+    @{
+    ViewData["Title"] = "Jouw Winkelmandje";
+    }
+
+    <div class="container mt-4">
+        <h2 class="mb-4">🛒 Jouw Bestelling (Tafel @ViewBag.TafelNummer)</h2>
+
+        @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">Je winkelmandje is nog leeg. Voeg snel iets lekkers toe!</div>
+        <a asp-controller="Main" asp-action="Menu" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-primary">Terug naar Menu</a>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm bg-white rounded">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product</th>
+                        <th>Prijs</th>
+                        <th>Aantal</th>
+                        <th>Subtotaal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td><strong>@item.Naam</strong></td>
+                        <td>€ @item.Prijs.ToString("0.00")</td>
+                        <td>@item.Aantal x</td>
+                        <td><strong>€ @item.Subtotaal.ToString("0.00")</strong></td>
+                        <td class="text-end">
+                            <a asp-controller="Main" asp-action="VerwijderUitMandje" asp-route-productId="@item.ProductId" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-sm btn-outline-danger" title="Verwijder dit item">
+                                🗑️ Verwijder
+                            </a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+                <tfoot class="table-dark">
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Totaal te betalen:</strong></td>
+                        <td><strong>€ @Model.Sum(i => i.Subtotaal).ToString("0.00")</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-controller="Main" asp-action="Menu" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-outline-secondary">← Verder winkelen</a>
+            <button class="btn btn-success btn-lg">Afrekenen (Mollie) →</button>
+        </div>
+    }
+    </div>

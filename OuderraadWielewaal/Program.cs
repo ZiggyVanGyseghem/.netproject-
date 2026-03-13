@@ -12,6 +12,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllersWithViews();
 // ... de rest van je Program.cs blijft hetzelfde
 
+// Voeg dit toe onder je database configuratie
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(2); // Mandje blijft 2 uur bewaard
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+}); 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +37,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
