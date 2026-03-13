@@ -36,7 +36,7 @@
 
 \- \[x] \[cite\_start]\*\*Dynamisch Assortiment:\*\* Haal de drank en versnaperingen rechtstreeks op uit de database \[cite: 13]
 
-\- \[ ] \[cite\_start]\*\*Winkelmandje (Overzicht):\*\* Maak een dynamisch overzicht met eenheidsprijs, aantal, subtotaal en totaalprijs \[cite: 15, 16]
+\- \[x] \[cite\_start]\*\*Winkelmandje (Overzicht):\*\* Maak een dynamisch overzicht met eenheidsprijs, aantal, subtotaal en totaalprijs \[cite: 15, 16]
 
 \- \[ ] \[cite\_start]\*\*Mollie API Integratie:\*\* Zorg dat de bestelling pas definitief is na een succesvolle betaling via Mollie \[cite: 18, 19]
 
