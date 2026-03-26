@@ -64,7 +64,7 @@
 
 \- \[ ] \[cite\_start]\*\*Detailpagina Bestelling:\*\* Maak een pagina die de historiekgegevens toont plus alle bestelde producten (aantal, eenheidsprijs, subtotaal) \[cite: 32]
 
-\- \[ ] \[cite\_start]\*\*Gebruikersbeheer (Deel 1):\*\* Maak een admin-pagina om gebruikers aan te maken en te verwijderen \[cite: 38, 42]
+\- \[x] \[cite\_start]\*\*Gebruikersbeheer (Deel 1):\*\* Maak een admin-pagina om gebruikers aan te maken en te verwijderen \[cite: 38, 42]
 
 \- \[ ] \[cite\_start]\*\*Gebruikersbeheer (Deel 2):\*\* Genereer een unieke URL/QR-code voor nieuwe gebruikers om hun registratie te voltooien (wachtwoord kiezen) \[cite: 38]
 
@@ -72,11 +72,11 @@
 
 \## Fase 6: Authenticatie \& Autorisatie
 
-\- \[ ] Implementeer een Login/Logout systeem
+\- \[x] Implementeer een Login/Logout systeem
 
-\- \[ ] \[cite\_start]Koppel de juiste rollen aan gebruikers (Bezoeker, Barmedewerker, Keukenmedewerker, Zaalmedewerker, Admin, Administrator) \[cite: 39]
+\- \[x] \[cite\_start]Koppel de juiste rollen aan gebruikers (Bezoeker, Barmedewerker, Keukenmedewerker, Zaalmedewerker, Admin, Administrator) \[cite: 39]
 
-\- \[ ] \[cite\_start]Beveilig de routes: API voor iedereen, Dashboards enkel voor medewerkers, mobiele bestelpagina enkel voor bezoekers \[cite: 44]
+\- \[x] \[cite\_start]Beveilig de routes: API voor iedereen, Dashboards enkel voor medewerkers, mobiele bestelpagina enkel voor bezoekers \[cite: 44]
 
 \- \[ ] \[cite\_start]Zorg dat admins rollen kunnen toewijzen en wijzigen (meerdere rollen per gebruiker mogelijk) \[cite: 39, 40, 41]
 

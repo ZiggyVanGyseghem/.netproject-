@@ -1,16 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using OuderraadWielewaal.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace OuderraadWielewaal.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<Gebruiker, Rol, int>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // Dit worden jouw tabellen in de database
-        public DbSet<Gebruiker> Gebruikers { get; set; }
-        public DbSet<Rol> Rollen { get; set; }
-        public DbSet<Roltoewijzing> Roltoewijzingen { get; set; }
         public DbSet<Tafel> Tafels { get; set; }
         public DbSet<Tafeltoewijzing> Tafeltoewijzingen { get; set; }
         public DbSet<Product> Producten { get; set; }
@@ -21,8 +20,10 @@ namespace OuderraadWielewaal.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Hier vertellen we EF Core over de tabellen met meerdere Primary Keys
-            modelBuilder.Entity<Roltoewijzing>()
-                .HasKey(rt => new { rt.GebruikerId, rt.RolId });
+            // Dit is cruciaal voor Identity!
+            base.OnModelCreating(modelBuilder);
+
+            // De Roltoewijzing HasKey mag weg!
 
             modelBuilder.Entity<Tafeltoewijzing>()
                 .HasKey(tt => new { tt.GebruikerId, tt.TafelId, tt.TijdstipToegewezen });

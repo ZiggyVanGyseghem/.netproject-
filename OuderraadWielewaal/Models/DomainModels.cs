@@ -1,19 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace OuderraadWielewaal.Models
 {
-    public class Gebruiker
+    public class Gebruiker : IdentityUser<int>
     {
-        [Key]
-        public int Id { get; set; }
+        // Id, UserName, Email en PasswordHash zitten nu onzichtbaar ingebouwd!
 
         [Required, MaxLength(255)]
         public string Naam { get; set; }
-
-        [MaxLength(255)]
-        public string? WachtwoordHash { get; set; }
 
         [MaxLength(255)]
         public string? UniekeCode { get; set; }
@@ -21,30 +18,14 @@ namespace OuderraadWielewaal.Models
         public DateTime? TijdstipGeactiveerd { get; set; }
 
         // Relaties
-        public ICollection<Roltoewijzing> Roltoewijzingen { get; set; } = new List<Roltoewijzing>();
         public ICollection<Tafeltoewijzing> Tafeltoewijzingen { get; set; } = new List<Tafeltoewijzing>();
         public ICollection<Bestelling> Bestellingen { get; set; } = new List<Bestelling>();
     }
 
-    public class Rol
+    public class Rol : IdentityRole<int>
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required, MaxLength(255)]
-        public string Naam { get; set; }
-
-        public ICollection<Roltoewijzing> Roltoewijzingen { get; set; } = new List<Roltoewijzing>();
     }
 
-    public class Roltoewijzing
-    {
-        public int GebruikerId { get; set; }
-        public Gebruiker Gebruiker { get; set; }
-
-        public int RolId { get; set; }
-        public Rol Rol { get; set; }
-    }
 
     public class Tafel
     {

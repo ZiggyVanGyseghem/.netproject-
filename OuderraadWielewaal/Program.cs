@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OuderraadWielewaal.Data;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,18 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
+// VOEG DIT BLOK TOE: Koppel ASP.NET Core Identity aan onze AppDbContext
+builder.Services.AddIdentity<OuderraadWielewaal.Models.Gebruiker, OuderraadWielewaal.Models.Rol>(options =>
+{
+    // Tijdelijke makkelijke wachtwoord-eisen (handig tijdens het testen!)
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 4;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+})
+.AddEntityFrameworkStores<OuderraadWielewaal.Data.AppDbContext>()
+.AddDefaultTokenProviders();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 // ... de rest van je Program.cs blijft hetzelfde
@@ -44,6 +56,39 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Main}/{action=Index}/{id?}")
     .WithStaticAssets();
+// --- START TESTDATA INJECTEREN (SEEDING) ---
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<OuderraadWielewaal.Models.Gebruiker>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<OuderraadWielewaal.Models.Rol>>();
 
+    // 1. Maak de rol 'Administrator' aan als die nog niet bestaat
+    if (!await roleManager.RoleExistsAsync("Administrator"))
+    {
+        await roleManager.CreateAsync(new OuderraadWielewaal.Models.Rol { Name = "Administrator" });
+    }
+
+    // 2. Maak een standaard beheerder aan als die nog niet bestaat
+    if (await userManager.FindByNameAsync("admin") == null)
+    {
+        var beheerder = new OuderraadWielewaal.Models.Gebruiker
+        {
+            UserName = "admin",
+            Naam = "Hoofdbeheerder Wielewaal"
+        };
+
+        // Wachtwoord is simpel voor lokaal testen (min. 4 tekens hadden we ingesteld)
+        var resultaat = await userManager.CreateAsync(beheerder, "1234");
+
+        if (resultaat.Succeeded)
+        {
+            await userManager.AddToRoleAsync(beheerder, "Administrator");
+        }
+    }
+}
+// --- EINDE TESTDATA INJECTEREN ---
+
+// Dit stond er waarschijnlijk al:
+app.Run();
 
 app.Run();
