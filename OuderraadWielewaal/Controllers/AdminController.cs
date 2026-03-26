@@ -34,13 +34,20 @@ namespace OuderraadWielewaal.Controllers
         public async Task<IActionResult> MaakGebruiker()
         {
             // Haal alle rollen op voor de dropdown, of maak standaard rollen aan als ze niet bestaan
-            if (!await _roleManager.Roles.AnyAsync())
+            if (!await _roleManager.RoleExistsAsync("Bar"))
             {
                 await _roleManager.CreateAsync(new Rol { Name = "Bar" });
+            }
+            if (!await _roleManager.RoleExistsAsync("Keuken"))
+            {
                 await _roleManager.CreateAsync(new Rol { Name = "Keuken" });
+            }
+            if (!await _roleManager.RoleExistsAsync("Zaal"))
+            {
                 await _roleManager.CreateAsync(new Rol { Name = "Zaal" });
             }
 
+            // Haal de ge�pdatete lijst met rollen op en stuur ze naar de dropdown
             ViewBag.Rollen = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
             return View();
         }
