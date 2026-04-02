@@ -30,7 +30,12 @@
                             <td>@user.Naam</td>
                             <td>
                                 <button class="btn btn-sm btn-outline-primary">Bewerk</button>
-                                <button class="btn btn-sm btn-outline-danger">Verwijder</button>
+
+                                <form asp-action="VerwijderGebruiker" asp-route-id="@user.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Weet je zeker dat je account \'@user.UserName\' permanent wilt verwijderen?');">
+                                        Verwijder
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }

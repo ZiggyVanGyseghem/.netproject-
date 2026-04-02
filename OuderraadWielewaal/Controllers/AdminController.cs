@@ -83,5 +83,22 @@ namespace OuderraadWielewaal.Controllers
             ViewBag.Rollen = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
             return View(model);
         }
+        // 4. Verwijder een gebruiker (POST)
+        [HttpPost]
+        public async Task<IActionResult> VerwijderGebruiker(string id)
+        {
+            var gebruiker = await _userManager.FindByIdAsync(id);
+
+            if (gebruiker != null)
+            {
+                // Veiligheidscheck: Zorg dat je niet jezelf kunt verwijderen!
+                if (gebruiker.UserName != User.Identity?.Name)
+                {
+                    await _userManager.DeleteAsync(gebruiker);
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }
