@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Bedankt voor je bestelling!";
+}
+
+<div class="container mt-5 text-center">
+    <div class="card shadow border-0 p-5">
+        <h1 class="display-1 text-success mb-3">🎉</h1>
+        <h2 class="fw-bold">Bestelling Ontvangen!</h2>
+        <p class="lead">Je bestelling <strong>#@ViewBag.BestellingId</strong> voor tafel <strong>@ViewBag.TafelNummer</strong> is succesvol doorgegeven aan de bar en keuken.</p>
+
+        <div class="mt-4">
+            <a asp-action="Menu" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-primary btn-lg">
+                Terug naar het menu
+            </a>
+        </div>
+    </div>
+</div>

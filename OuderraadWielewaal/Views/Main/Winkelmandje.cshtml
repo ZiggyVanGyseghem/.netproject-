@@ -49,10 +49,15 @@
                 </tfoot>
             </table>
         </div>
-
         <div class="d-flex justify-content-between mt-4">
             <a asp-controller="Main" asp-action="Menu" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-outline-secondary">← Verder winkelen</a>
-            <button class="btn btn-success btn-lg">Afrekenen (Mollie) →</button>
+
+            <form asp-controller="Main" asp-action="Afrekenen" method="post">
+                <input type="hidden" name="tafelId" value="@ViewBag.TafelNummer" />
+                <button type="submit" class="btn btn-success btn-lg fw-bold">
+                    Afrekenen (Plaats Bestelling) →
+                </button>
+            </form>
         </div>
     }
     </div>

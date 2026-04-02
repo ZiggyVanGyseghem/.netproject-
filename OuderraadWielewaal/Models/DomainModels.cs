@@ -26,7 +26,6 @@ namespace OuderraadWielewaal.Models
     {
     }
 
-
     public class Tafel
     {
         [Key]
@@ -106,4 +105,5 @@ namespace OuderraadWielewaal.Models
         [Required]
         public int Hoeveelheid { get; set; }
     }
+
 }

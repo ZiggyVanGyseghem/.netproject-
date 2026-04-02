@@ -4,6 +4,8 @@ using System.Linq;
 using OuderraadWielewaal.Extensions;
 using OuderraadWielewaal.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 namespace OuderraadWielewaal.Controllers
 {
@@ -63,6 +65,7 @@ namespace OuderraadWielewaal.Controllers
             HttpContext.Session.SetObjectAsJson("Winkelmandje", mandje);
             return RedirectToAction("Menu", new { tafelId = tafelId });
         }
+
         public IActionResult VerwijderUitMandje(int productId, int tafelId)
         {
             var mandje = HttpContext.Session.GetObjectFromJson<List<WinkelmandItem>>("Winkelmandje");
@@ -95,5 +98,57 @@ namespace OuderraadWielewaal.Controllers
             // Geef de lijst met items aan de pagina
             return View(mandje);
         }
-    }
+
+        // --- NIEUWE AFREKENEN CODE (Nu netjes BINNEN de klasse!) ---
+
+        [HttpPost]
+        public async Task<IActionResult> Afrekenen(int tafelId)
+        {
+            // 1. Haal het mandje uit de sessie
+            var mandje = HttpContext.Session.GetObjectFromJson<List<WinkelmandItem>>("Winkelmandje");
+
+            // Als het mandje leeg is, stuur ze terug
+            if (mandje == null || !mandje.Any())
+            {
+                return RedirectToAction("Winkelmandje", new { tafelId = tafelId });
+            }
+
+            // 2. Maak de hoofd-bestelling aan
+            var nieuweBestelling = new Bestelling
+            {
+                GebruikerId = 1, // TIJDELIJK: We koppelen dit later aan een echt account/tafel-ID
+                TijdstipBesteld = DateTime.Now,
+                Status = BestelStatus.InDeWachtrij, // <-- Jouw versie!
+                BetaalStatus = BetaalStatus.Open    // <-- Jouw versie!
+            };
+
+            // 3. Voeg alle producten uit het session-mandje toe als Bestellijnen
+            foreach (var item in mandje)
+            {
+                nieuweBestelling.Bestellijnen.Add(new Bestellijn
+                {
+                    ProductId = item.ProductId,
+                    Hoeveelheid = item.Aantal
+                });
+            }
+
+            // 4. Sla op in de MariaDB database
+            _context.Bestellingen.Add(nieuweBestelling);
+            await _context.SaveChangesAsync();
+
+            // 5. Maak het winkelmandje leeg, want de bestelling is geplaatst!
+            HttpContext.Session.Remove("Winkelmandje");
+
+            // 6. Stuur de bezoeker naar een bedank-pagina
+            return RedirectToAction("Bedankt", new { tafelId = tafelId, bestellingId = nieuweBestelling.Id });
+        }
+
+        // De bedank-pagina die getoond wordt na het afrekenen
+        public IActionResult Bedankt(int tafelId, int bestellingId)
+        {
+            ViewBag.TafelNummer = tafelId;
+            ViewBag.BestellingId = bestellingId;
+            return View();
+        }
+    } 
 }
