@@ -94,7 +94,7 @@ namespace OuderraadWielewaal.Models
         public ICollection<Bestellijn> Bestellijnen { get; set; } = new List<Bestellijn>();
     }
 
-    public class Bestellijn
+public class Bestellijn
     {
         public int BestellingId { get; set; }
         public Bestelling Bestelling { get; set; }
