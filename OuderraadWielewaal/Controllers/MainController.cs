@@ -6,6 +6,8 @@ using OuderraadWielewaal.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Mollie.Api.Client;
+using Mollie.Api.Models.Payment.Request;
 
 namespace OuderraadWielewaal.Controllers
 {
@@ -13,7 +15,6 @@ namespace OuderraadWielewaal.Controllers
     {
         private readonly AppDbContext _context;
 
-        // Dit is "Dependency Injection". .NET geeft automatisch de database door aan deze controller.
         public MainController(AppDbContext context)
         {
             _context = context;
@@ -24,16 +25,10 @@ namespace OuderraadWielewaal.Controllers
             return View();
         }
 
-        // We accepteren nu een tafelId via de URL (standaard op 1 als er niets is ingevuld)
         public IActionResult Menu(int tafelId = 1)
         {
-            // Haal alle producten uit de database
             var producten = _context.Productdetails.ToList();
-
-            // Sla het tafelnummer op zodat de HTML pagina het kan lezen
             ViewBag.TafelNummer = tafelId;
-
-            // Geef de lijst met producten mee aan de View
             return View(producten);
         }
 
@@ -48,7 +43,6 @@ namespace OuderraadWielewaal.Controllers
             var bestaandItem = mandje.FirstOrDefault(i => i.ProductId == productId);
             if (bestaandItem != null)
             {
-                // Tel het gekozen aantal op bij wat er al in het mandje zat!
                 bestaandItem.Aantal += aantal;
             }
             else
@@ -58,7 +52,7 @@ namespace OuderraadWielewaal.Controllers
                     ProductId = product.ProductId,
                     Naam = product.Naam,
                     Prijs = product.Prijs,
-                    Aantal = aantal // Gebruik het gekozen aantal!
+                    Aantal = aantal
                 });
             }
 
@@ -72,109 +66,99 @@ namespace OuderraadWielewaal.Controllers
 
             if (mandje != null)
             {
-                // Zoek het product en verwijder het uit de lijst
                 var item = mandje.FirstOrDefault(i => i.ProductId == productId);
                 if (item != null)
                 {
                     mandje.Remove(item);
-                    // Sla de geüpdatete lijst weer op
                     HttpContext.Session.SetObjectAsJson("Winkelmandje", mandje);
                 }
             }
 
-            // Stuur terug naar het winkelmandje
             return RedirectToAction("Winkelmandje", new { tafelId = tafelId });
         }
 
-        // Laadt de Winkelmandje pagina
         public IActionResult Winkelmandje(int tafelId)
         {
-            // Haal het mandje uit het geheugen (of maak een lege lijst als hij er niet is)
             var mandje = HttpContext.Session.GetObjectFromJson<List<WinkelmandItem>>("Winkelmandje") ?? new List<WinkelmandItem>();
-
-            // Stuur het tafelnummer weer mee
             ViewBag.TafelNummer = tafelId;
-
-            // Geef de lijst met items aan de pagina
             return View(mandje);
         }
 
-        // --- NIEUWE AFREKENEN CODE (Nu netjes BINNEN de klasse!) ---
-
+        // --- SCHONE AFREKENEN CODE ---
         [HttpPost]
         public async Task<IActionResult> Afrekenen(int tafelId)
         {
-            // 1. Haal het mandje uit de sessie
             var mandje = HttpContext.Session.GetObjectFromJson<List<WinkelmandItem>>("Winkelmandje");
+            if (mandje == null || !mandje.Any()) return RedirectToAction("Winkelmandje", new { tafelId = tafelId });
 
-            if (mandje == null || !mandje.Any())
-            {
-                return RedirectToAction("Winkelmandje", new { tafelId = tafelId });
-            }
-
-            // 2. Zoek op welke items drankjes zijn en welke snacks (via de database)
+            // 1. Bereken het totaalbedrag voor Mollie
             var productIds = mandje.Select(i => i.ProductId).ToList();
             var productenUitDb = _context.Productdetails.Where(p => productIds.Contains(p.ProductId)).ToList();
 
-            var drankjes = mandje.Where(i => productenUitDb.Any(p => p.ProductId == i.ProductId && p.ProductType == ProductType.Drank)).ToList();
-            var snacks = mandje.Where(i => productenUitDb.Any(p => p.ProductId == i.ProductId && p.ProductType == ProductType.Versnapering)).ToList();
-
-            int laatsteBestelId = 0;
-
-            // 3. Maak een losse bestelling (bonnetje) voor de BAR
-            if (drankjes.Any())
+            double totaalPrijs = 0;
+            foreach (var item in mandje)
             {
-                var drankBestelling = new Bestelling
-                {
-                    GebruikerId = 1, // Tijdelijk
-                    TijdstipBesteld = DateTime.Now,
-                    Status = BestelStatus.InDeWachtrij,
-                    BetaalStatus = BetaalStatus.Open
-                };
-
-                foreach (var item in drankjes)
-                {
-                    drankBestelling.Bestellijnen.Add(new Bestellijn { ProductId = item.ProductId, Hoeveelheid = item.Aantal });
-                }
-
-                _context.Bestellingen.Add(drankBestelling);
-                await _context.SaveChangesAsync();
-                laatsteBestelId = drankBestelling.Id;
+                var product = productenUitDb.FirstOrDefault(p => p.ProductId == item.ProductId);
+                if (product != null) totaalPrijs += (product.Prijs * item.Aantal);
             }
 
-            // 4. Maak een losse bestelling (bonnetje) voor de KEUKEN
-            if (snacks.Any())
+            var nieuweBestelling = new Bestelling
             {
-                var snackBestelling = new Bestelling
-                {
-                    GebruikerId = 1, // Tijdelijk
-                    TijdstipBesteld = DateTime.Now,
-                    Status = BestelStatus.InDeWachtrij,
-                    BetaalStatus = BetaalStatus.Open
-                };
+                GebruikerId = 1, // Tijdelijk
+                TijdstipBesteld = DateTime.Now,
+                Status = BestelStatus.InDeWachtrij,
+                BetaalStatus = BetaalStatus.Open
+            };
 
-                foreach (var item in snacks)
-                {
-                    snackBestelling.Bestellijnen.Add(new Bestellijn { ProductId = item.ProductId, Hoeveelheid = item.Aantal });
-                }
-
-                _context.Bestellingen.Add(snackBestelling);
-                await _context.SaveChangesAsync();
-                laatsteBestelId = snackBestelling.Id;
+            foreach (var item in mandje)
+            {
+                nieuweBestelling.Bestellijnen.Add(new Bestellijn { ProductId = item.ProductId, Hoeveelheid = item.Aantal });
             }
 
-            // 5. Maak het winkelmandje leeg
+            _context.Bestellingen.Add(nieuweBestelling);
+            await _context.SaveChangesAsync();
             HttpContext.Session.Remove("Winkelmandje");
 
-            // 6. Stuur door naar bedankt pagina
-            return RedirectToAction("Bedankt", new { tafelId = tafelId, bestellingId = laatsteBestelId });
+            // 2. MAAK DE MOLLIE BETALING AAN
+            var mollieClient = new PaymentClient("test_ASHM9vDq92bmmBMaHSdwTvd5Q3Tms7");
+
+            var paymentRequest = new PaymentRequest
+            {
+                Amount = new Mollie.Api.Models.Amount(Mollie.Api.Models.Currency.EUR, totaalPrijs.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
+                Description = $"ORW Bestelling #{nieuweBestelling.Id} - Tafel {tafelId}",
+
+                // Waar moet de klant heen na het betalen? Naar de bedankt-pagina!
+                RedirectUrl = $"http://localhost:5012/Main/Bedankt?tafelId={tafelId}&bestellingId={nieuweBestelling.Id}",
+
+                // Waar moet Mollie stiekem een berichtje naartoe sturen als de betaling is gelukt?
+                WebhookUrl = "https://jouwwebsite.nl/api/mollie/webhook",
+
+                Metadata = nieuweBestelling.Id.ToString()
+            };
+
+            var paymentResponse = await mollieClient.CreatePaymentAsync(paymentRequest);
+
+            // 3. STUUR DE KLANT NAAR HET BETAALSCHERM!
+            return Redirect(paymentResponse.Links.Checkout.Href);
         }
-        // De bedank-pagina die getoond wordt na het afrekenen
-        public IActionResult Bedankt(int tafelId, int bestellingId)
+
+        // We maken hem 'async Task' omdat we de database gaan updaten
+        public async Task<IActionResult> Bedankt(int tafelId, int bestellingId)
         {
+            // 1. Zoek de bestelling op in de database
+            var bestelling = await _context.Bestellingen.FindAsync(bestellingId);
+
+            // 2. Als we hem vinden, en hij staat nog op Open...
+            if (bestelling != null && bestelling.BetaalStatus == OuderraadWielewaal.Models.BetaalStatus.Open)
+            {
+                // ...dan zetten we hem nu op Betaald!
+                bestelling.BetaalStatus = OuderraadWielewaal.Models.BetaalStatus.Betaald;
+                await _context.SaveChangesAsync();
+            }
+
             ViewBag.TafelNummer = tafelId;
             ViewBag.BestellingId = bestellingId;
             return View();
         }
-    } 
+    }
 }

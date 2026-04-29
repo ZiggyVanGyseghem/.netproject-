@@ -1,6 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using OuderraadWielewaal.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Mollie.Api;
+using Mollie.Api.Extensions;
+using OuderraadWielewaal.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +33,13 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromHours(2); // Mandje blijft 2 uur bewaard
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-}); 
+});
+
+// Voeg dit toe in Program.cs (bij de andere services)
+// Voeg Mollie toe aan de applicatie
+builder.Services.AddMollieApi(options => {
+    options.ApiKey = builder.Configuration["Mollie:ApiKey"];
+});
 
 var app = builder.Build();
 
