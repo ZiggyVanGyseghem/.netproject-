@@ -19,11 +19,12 @@
     else
     {
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            
+
             @foreach (var bestelling in Model)
             {
                 // DE MAGIE: We filteren de bestelling zodat de bar ALLEEN producten van het type 'Drank' ziet!
-                var drankjes = bestelling.Bestellijnen.Where(bl => bl.Product.Productdetails.Any(pd => pd.ProductType == OuderraadWielewaal.Models.ProductType.Drank)).ToList();
+                var drankjes = bestelling.Bestellijnen.Where(bl => bl.Product.Productdetails.Any(pd => pd.ProductType == OuderraadWielewaal.Models
+                .ProductType.Drank)).ToList();
 
                 // Toon dit bonnetje alleen als er ook daadwerkelijk drankjes in zitten
                 if (drankjes.Any())
@@ -34,10 +35,10 @@
                                 <span class="fs-5">Tafel (Gebruiker @bestelling.GebruikerId)</span>
                                 <span class="fs-5">#@bestelling.Id</span>
                             </div>
-                            
+
                             <div class="card-body bg-light">
                                 <p class="text-muted small mb-3">🕒 Besteld om: @bestelling.TijdstipBesteld.ToString("HH:mm")</p>
-                                
+
                                 <ul class="list-group list-group-flush mb-3">
                                     @foreach (var lijn in drankjes)
                                     {

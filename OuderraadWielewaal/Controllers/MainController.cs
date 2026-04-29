@@ -127,8 +127,8 @@ namespace OuderraadWielewaal.Controllers
                 Amount = new Mollie.Api.Models.Amount(Mollie.Api.Models.Currency.EUR, totaalPrijs.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
                 Description = $"ORW Bestelling #{nieuweBestelling.Id} - Tafel {tafelId}",
 
-                // Waar moet de klant heen na het betalen? Naar de bedankt-pagina!
-                RedirectUrl = $"http://localhost:5012/Main/Bedankt?tafelId={tafelId}&bestellingId={nieuweBestelling.Id}",
+                // Gebruik Url.Action om dynamisch de juiste URL te genereren (werkt lokaal én op MonsterASP)
+                RedirectUrl = Url.Action("Bedankt", "Main", new { tafelId = tafelId, bestellingId = nieuweBestelling.Id }, Request.Scheme),
 
                 // Waar moet Mollie stiekem een berichtje naartoe sturen als de betaling is gelukt?
                 WebhookUrl = "https://jouwwebsite.nl/api/mollie/webhook",

@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Voeg dit blok toe: Verbind met MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 30))));
 // VOEG DIT BLOK TOE: Koppel ASP.NET Core Identity aan onze AppDbContext
 builder.Services.AddIdentity<OuderraadWielewaal.Models.Gebruiker, OuderraadWielewaal.Models.Rol>(options =>
 {
@@ -99,4 +99,3 @@ using (var scope = app.Services.CreateScope())
 // Dit stond er waarschijnlijk al:
 app.Run();
 
-app.Run();
