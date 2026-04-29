@@ -107,42 +107,68 @@ namespace OuderraadWielewaal.Controllers
             // 1. Haal het mandje uit de sessie
             var mandje = HttpContext.Session.GetObjectFromJson<List<WinkelmandItem>>("Winkelmandje");
 
-            // Als het mandje leeg is, stuur ze terug
             if (mandje == null || !mandje.Any())
             {
                 return RedirectToAction("Winkelmandje", new { tafelId = tafelId });
             }
 
-            // 2. Maak de hoofd-bestelling aan
-            var nieuweBestelling = new Bestelling
-            {
-                GebruikerId = 1, // TIJDELIJK: We koppelen dit later aan een echt account/tafel-ID
-                TijdstipBesteld = DateTime.Now,
-                Status = BestelStatus.InDeWachtrij, // <-- Jouw versie!
-                BetaalStatus = BetaalStatus.Open    // <-- Jouw versie!
-            };
+            // 2. Zoek op welke items drankjes zijn en welke snacks (via de database)
+            var productIds = mandje.Select(i => i.ProductId).ToList();
+            var productenUitDb = _context.Productdetails.Where(p => productIds.Contains(p.ProductId)).ToList();
 
-            // 3. Voeg alle producten uit het session-mandje toe als Bestellijnen
-            foreach (var item in mandje)
+            var drankjes = mandje.Where(i => productenUitDb.Any(p => p.ProductId == i.ProductId && p.ProductType == ProductType.Drank)).ToList();
+            var snacks = mandje.Where(i => productenUitDb.Any(p => p.ProductId == i.ProductId && p.ProductType == ProductType.Versnapering)).ToList();
+
+            int laatsteBestelId = 0;
+
+            // 3. Maak een losse bestelling (bonnetje) voor de BAR
+            if (drankjes.Any())
             {
-                nieuweBestelling.Bestellijnen.Add(new Bestellijn
+                var drankBestelling = new Bestelling
                 {
-                    ProductId = item.ProductId,
-                    Hoeveelheid = item.Aantal
-                });
+                    GebruikerId = 1, // Tijdelijk
+                    TijdstipBesteld = DateTime.Now,
+                    Status = BestelStatus.InDeWachtrij,
+                    BetaalStatus = BetaalStatus.Open
+                };
+
+                foreach (var item in drankjes)
+                {
+                    drankBestelling.Bestellijnen.Add(new Bestellijn { ProductId = item.ProductId, Hoeveelheid = item.Aantal });
+                }
+
+                _context.Bestellingen.Add(drankBestelling);
+                await _context.SaveChangesAsync();
+                laatsteBestelId = drankBestelling.Id;
             }
 
-            // 4. Sla op in de MariaDB database
-            _context.Bestellingen.Add(nieuweBestelling);
-            await _context.SaveChangesAsync();
+            // 4. Maak een losse bestelling (bonnetje) voor de KEUKEN
+            if (snacks.Any())
+            {
+                var snackBestelling = new Bestelling
+                {
+                    GebruikerId = 1, // Tijdelijk
+                    TijdstipBesteld = DateTime.Now,
+                    Status = BestelStatus.InDeWachtrij,
+                    BetaalStatus = BetaalStatus.Open
+                };
 
-            // 5. Maak het winkelmandje leeg, want de bestelling is geplaatst!
+                foreach (var item in snacks)
+                {
+                    snackBestelling.Bestellijnen.Add(new Bestellijn { ProductId = item.ProductId, Hoeveelheid = item.Aantal });
+                }
+
+                _context.Bestellingen.Add(snackBestelling);
+                await _context.SaveChangesAsync();
+                laatsteBestelId = snackBestelling.Id;
+            }
+
+            // 5. Maak het winkelmandje leeg
             HttpContext.Session.Remove("Winkelmandje");
 
-            // 6. Stuur de bezoeker naar een bedank-pagina
-            return RedirectToAction("Bedankt", new { tafelId = tafelId, bestellingId = nieuweBestelling.Id });
+            // 6. Stuur door naar bedankt pagina
+            return RedirectToAction("Bedankt", new { tafelId = tafelId, bestellingId = laatsteBestelId });
         }
-
         // De bedank-pagina die getoond wordt na het afrekenen
         public IActionResult Bedankt(int tafelId, int bestellingId)
         {

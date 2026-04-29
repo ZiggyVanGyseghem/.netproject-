@@ -1,0 +1,59 @@
+﻿@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
+@{
+    ViewData["Title"] = "Zaal Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary">🏃 Zaal Dashboard (Bediening)</h1>
+        <span class="badge bg-primary text-white fs-6 blink">Wachten op Uitserveren</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info shadow-sm">
+            <h4>Alles is geserveerd! 👏</h4>
+            <p class="mb-0">Er staat op dit moment niets klaar op de bar of bij de keuken om weggebracht te worden.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+            @foreach (var bestelling in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow border-primary">
+                        <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between">
+                            <span class="fs-4">👉 Tafel @bestelling.GebruikerId</span>
+                            <span class="fs-5">#@bestelling.Id</span>
+                        </div>
+
+                        <div class="card-body bg-light">
+                            <p class="text-muted small mb-3">🕒 Klaar gezet om: @DateTime.Now.ToString("HH:mm")</p>
+
+                            <ul class="list-group list-group-flush mb-3">
+                                @foreach (var lijn in bestelling.Bestellijnen)
+                                {
+                                    <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 fs-5">
+                                        <span><strong>@lijn.Hoeveelheid x</strong> @lijn.Product.Productdetails.First().Naam</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="card-footer bg-white border-top-0 pb-3 pt-0">
+                            <form asp-controller="Zaal" asp-action="MarkeerAlsAfgeleverd" method="post">
+                                <input type="hidden" name="id" value="@bestelling.Id" />
+                                <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold shadow-sm">
+                                    🤝 Afgeleverd aan Tafel
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+</div>

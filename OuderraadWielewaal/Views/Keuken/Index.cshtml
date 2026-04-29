@@ -1,0 +1,65 @@
+﻿@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
+@{
+    ViewData["Title"] = "Keuken Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-danger">🍔 Keuken Dashboard</h1>
+        <span class="badge bg-danger text-white fs-6 blink">Hete Vuren Actief</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-success shadow-sm">
+            <h4>De keuken is schoon! 🧼</h4>
+            <p class="mb-0">Er zijn op dit moment geen openstaande snacks of maaltijden. Even rust!</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+            @foreach (var bestelling in Model)
+            {
+                // DE MAGIE: We filteren zodat de keuken ALLEEN producten van het type 'Versnapering' ziet!
+                var snacks = bestelling.Bestellijnen.Where(bl => bl.Product.Productdetails.Any(pd => pd.ProductType == OuderraadWielewaal.Models.ProductType.Versnapering)).ToList();
+
+                if (snacks.Any())
+                {
+                    <div class="col">
+                        <div class="card h-100 shadow border-danger">
+                            <div class="card-header bg-danger text-white fw-bold d-flex justify-content-between">
+                                <span class="fs-5">Tafel (Gebruiker @bestelling.GebruikerId)</span>
+                                <span class="fs-5">#@bestelling.Id</span>
+                            </div>
+
+                            <div class="card-body bg-light">
+                                <p class="text-muted small mb-3">🕒 Besteld om: @bestelling.TijdstipBesteld.ToString("HH:mm")</p>
+
+                                <ul class="list-group list-group-flush mb-3">
+                                    @foreach (var lijn in snacks)
+                                    {
+                                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 fs-5">
+                                            <span><strong>@lijn.Hoeveelheid x</strong> @lijn.Product.Productdetails.First().Naam</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+
+                            <div class="card-footer bg-white border-top-0 pb-3 pt-0">
+                                <form asp-controller="Keuken" asp-action="MarkeerAlsKlaar" method="post">
+                                    <input type="hidden" name="id" value="@bestelling.Id" />
+                                    <button type="submit" class="btn btn-danger w-100 btn-lg fw-bold shadow-sm">
+                                        🔥 Snacks Klaar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    }
+</div>

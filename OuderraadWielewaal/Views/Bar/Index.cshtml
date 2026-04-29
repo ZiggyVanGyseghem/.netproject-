@@ -1,0 +1,66 @@
+﻿@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
+@{
+    ViewData["Title"] = "Bar Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>🍺 Bar Dashboard</h1>
+        <span class="badge bg-warning text-dark fs-6 blink">Live Updates Actief</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-success shadow-sm">
+            <h4>Alles is weggewerkt! 🎉</h4>
+            <p class="mb-0">Er zijn op dit moment geen openstaande bestellingen voor de bar. Tijd voor koffie!</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            
+            @foreach (var bestelling in Model)
+            {
+                // DE MAGIE: We filteren de bestelling zodat de bar ALLEEN producten van het type 'Drank' ziet!
+                var drankjes = bestelling.Bestellijnen.Where(bl => bl.Product.Productdetails.Any(pd => pd.ProductType == OuderraadWielewaal.Models.ProductType.Drank)).ToList();
+
+                // Toon dit bonnetje alleen als er ook daadwerkelijk drankjes in zitten
+                if (drankjes.Any())
+                {
+                    <div class="col">
+                        <div class="card h-100 shadow border-warning">
+                            <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between">
+                                <span class="fs-5">Tafel (Gebruiker @bestelling.GebruikerId)</span>
+                                <span class="fs-5">#@bestelling.Id</span>
+                            </div>
+                            
+                            <div class="card-body bg-light">
+                                <p class="text-muted small mb-3">🕒 Besteld om: @bestelling.TijdstipBesteld.ToString("HH:mm")</p>
+                                
+                                <ul class="list-group list-group-flush mb-3">
+                                    @foreach (var lijn in drankjes)
+                                    {
+                                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 fs-5">
+                                            <span><strong>@lijn.Hoeveelheid x</strong> @lijn.Product.Productdetails.First().Naam</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+
+                            <div class="card-footer bg-white border-top-0 pb-3 pt-0">
+                                <form asp-controller="Bar" asp-action="MarkeerAlsKlaar" method="post">
+                                    <input type="hidden" name="id" value="@bestelling.Id" />
+                                    <button type="submit" class="btn btn-success w-100 btn-lg fw-bold shadow-sm">
+                                        ✅ Drankjes Klaar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    }
+</div>
