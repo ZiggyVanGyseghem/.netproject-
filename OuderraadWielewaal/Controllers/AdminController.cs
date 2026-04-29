@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OuderraadWielewaal.Models;
 using OuderraadWielewaal.ViewModels;
+using OuderraadWielewaal.Data;
 using System.Threading.Tasks;
 using System.Linq;
 
@@ -15,25 +16,46 @@ namespace OuderraadWielewaal.Controllers
     {
         private readonly UserManager<Gebruiker> _userManager;
         private readonly RoleManager<Rol> _roleManager;
+        private readonly AppDbContext _context;
 
-        public AdminController(UserManager<Gebruiker> userManager, RoleManager<Rol> roleManager)
+        public AdminController(UserManager<Gebruiker> userManager, RoleManager<Rol> roleManager, AppDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
-        // 1. Overzicht van alle gebruikers
-        public async Task<IActionResult> Index()
+        // 1. Het Admin Dashboard (Keuzescherm met de grote knoppen)
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        // 2. Overzicht van alle gebruikers (Dit is de pagina die een 404 gaf!)
+        public async Task<IActionResult> Gebruikers()
         {
             var alleGebruikers = await _userManager.Users.ToListAsync();
             return View(alleGebruikers);
         }
 
-        // 2. Laat het formulier zien om een gebruiker te maken (GET)
+        // 3. Haalt het grote overzicht op van ALLE bestellingen voor de beheerder
+        public async Task<IActionResult> Bestellingen()
+        {
+            var alleBestellingen = await _context.Bestellingen
+                .Include(b => b.Gebruiker)
+                .Include(b => b.Bestellijnen)
+                    .ThenInclude(bl => bl.Product)
+                        .ThenInclude(p => p.Productdetails)
+                .OrderByDescending(b => b.TijdstipBesteld) // Nieuwste bovenaan
+                .ToListAsync();
+
+            return View(alleBestellingen);
+        }
+
+        // 4. Laat het formulier zien om een gebruiker te maken (GET)
         [HttpGet]
         public async Task<IActionResult> MaakGebruiker()
         {
-            // Haal alle rollen op voor de dropdown, of maak standaard rollen aan als ze niet bestaan
             if (!await _roleManager.RoleExistsAsync("Bar"))
             {
                 await _roleManager.CreateAsync(new Rol { Name = "Bar" });
@@ -47,12 +69,11 @@ namespace OuderraadWielewaal.Controllers
                 await _roleManager.CreateAsync(new Rol { Name = "Zaal" });
             }
 
-            // Haal de ge�pdatete lijst met rollen op en stuur ze naar de dropdown
             ViewBag.Rollen = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
             return View();
         }
 
-        // 3. Sla de nieuwe gebruiker op in de database (POST)
+        // 5. Sla de nieuwe gebruiker op in de database (POST)
         [HttpPost]
         public async Task<IActionResult> MaakGebruiker(CreateUserViewModel model)
         {
@@ -64,14 +85,12 @@ namespace OuderraadWielewaal.Controllers
                     Naam = model.Naam
                 };
 
-                // Identity regelt het veilig hashen van het wachtwoord!
                 var resultaat = await _userManager.CreateAsync(nieuweGebruiker, model.Wachtwoord);
 
                 if (resultaat.Succeeded)
                 {
-                    // Koppel de gekozen rol aan de gebruiker
                     await _userManager.AddToRoleAsync(nieuweGebruiker, model.Rol);
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Gebruikers"); // Fix: Stuur terug naar de tabel!
                 }
 
                 foreach (var error in resultaat.Errors)
@@ -83,7 +102,8 @@ namespace OuderraadWielewaal.Controllers
             ViewBag.Rollen = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
             return View(model);
         }
-        // 4. Verwijder een gebruiker (POST)
+
+        // 6. Verwijder een gebruiker (POST)
         [HttpPost]
         public async Task<IActionResult> VerwijderGebruiker(string id)
         {
@@ -91,14 +111,13 @@ namespace OuderraadWielewaal.Controllers
 
             if (gebruiker != null)
             {
-                // Veiligheidscheck: Zorg dat je niet jezelf kunt verwijderen!
                 if (gebruiker.UserName != User.Identity?.Name)
                 {
                     await _userManager.DeleteAsync(gebruiker);
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Gebruikers"); // Fix: Stuur terug naar de tabel!
         }
     }
 }

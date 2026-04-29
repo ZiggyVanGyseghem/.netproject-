@@ -1,0 +1,45 @@
+﻿@model IEnumerable<OuderraadWielewaal.Models.Gebruiker>
+@{
+    ViewData["Title"] = "Gebruikersbeheer";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h2>👥 Gebruikersbeheer</h2>
+        <a asp-action="MaakGebruiker" class="btn btn-success fw-bold">
+            + Nieuwe Medewerker Aanmaken
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Gebruikersnaam</th>
+                        <th>Volledige Naam</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@user.UserName</td>
+                            <td>@user.Naam</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Bewerk</button>
+
+                                <form asp-action="VerwijderGebruiker" asp-route-id="@user.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Weet je zeker dat je account \'@user.UserName\' permanent wilt verwijderen?');">
+                                        Verwijder
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

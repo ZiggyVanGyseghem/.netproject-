@@ -1,0 +1,50 @@
+﻿@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
+@{
+    ViewData["Title"] = "Bestelhistoriek";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📊 Alle Bestellingen</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">← Terug naar Admin Menu</a>
+    </div>
+
+    <div class="table-responsive shadow-sm bg-white rounded">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th># ID</th>
+                    <th>Tijdstip</th>
+                    <th>Tafel</th>
+                    <th>Producten</th>
+                    <th>Totaalprijs</th>
+                    <th>Status</th>
+                    <th>Betaling</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var bestelling in Model)
+                {
+                    double totaalPrijs = bestelling.Bestellijnen.Sum(bl => bl.Hoeveelheid * bl.Product.Productdetails.First().Prijs);
+
+                    <tr>
+                        <td><strong>@bestelling.Id</strong></td>
+                        <td>@bestelling.TijdstipBesteld.ToString("HH:mm")</td>
+                        <td>Tafel @bestelling.GebruikerId</td>
+                        <td>
+                            <ul class="list-unstyled mb-0 small">
+                                @foreach (var lijn in bestelling.Bestellijnen)
+                                {
+                                    <li>@lijn.Hoeveelheid x @lijn.Product.Productdetails.First().Naam</li>
+                                }
+                            </ul>
+                        </td>
+                        <td><strong>€ @totaalPrijs.ToString("0.00")</strong></td>
+                        <td><span class="badge bg-secondary">@bestelling.Status</span></td>
+                        <td><span class="badge bg-info">@bestelling.BetaalStatus</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
