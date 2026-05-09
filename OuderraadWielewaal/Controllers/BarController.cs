@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OuderraadWielewaal.Data;
@@ -22,14 +22,15 @@ namespace OuderraadWielewaal.Controllers
         // 2. HET DASHBOARD SCHERM
         public async Task<IActionResult> Index()
         {
-            // Haal alle openstaande bestellingen op uit de database
             var openBestellingen = await _context.Bestellingen
-                .Include(b => b.Gebruiker) // Wie heeft het besteld?
-                .Include(b => b.Bestellijnen) // Welke regels zitten er in de bestelling?
-                    .ThenInclude(bl => bl.Product) // Welk product hoort bij die regel?
-                        .ThenInclude(p => p.Productdetails) // Wat is de naam en het type van het product?
-                .Where(b => b.Status == BestelStatus.InDeWachtrij) // Alleen bestellingen die in de wachtrij staan
-                .OrderBy(b => b.TijdstipBesteld) // De oudste bestellingen bovenaan (wie het eerst komt...)
+                .Include(b => b.Gebruiker)
+                    .ThenInclude(g => g.Tafeltoewijzingen)
+                        .ThenInclude(tt => tt.Tafel)
+                .Include(b => b.Bestellijnen)
+                    .ThenInclude(bl => bl.Product)
+                        .ThenInclude(p => p.Productdetails)
+                .Where(b => b.Status == BestelStatus.InDeWachtrij)
+                .OrderBy(b => b.TijdstipBesteld)
                 .ToListAsync();
 
             return View(openBestellingen);

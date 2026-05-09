@@ -1,4 +1,4 @@
-﻿@model OuderraadWielewaal.ViewModels.CreateUserViewModel
+@model OuderraadWielewaal.ViewModels.CreateUserViewModel
 
 @{
     ViewData["Title"] = "Nieuwe Medewerker";
@@ -15,21 +15,9 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <div class="mb-3">
-                            <label asp-for="Gebruikersnaam" class="form-label fw-bold">Gebruikersnaam (Login)</label>
-                            <input asp-for="Gebruikersnaam" class="form-control" placeholder="Bijv. bar_jan" />
-                            <span asp-validation-for="Gebruikersnaam" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Naam" class="form-label fw-bold">Volledige Naam</label>
-                            <input asp-for="Naam" class="form-control" placeholder="Bijv. Jan Peeters" />
+                            <label asp-for="Naam" class="form-label fw-bold">Volledige Naam of Tafel Naam</label>
+                            <input asp-for="Naam" class="form-control" placeholder="Bijv. Jan Peeters of Tafel 1" />
                             <span asp-validation-for="Naam" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Wachtwoord" class="form-label fw-bold">Tijdelijk Wachtwoord</label>
-                            <input asp-for="Wachtwoord" class="form-control" placeholder="••••••••" />
-                            <span asp-validation-for="Wachtwoord" class="text-danger"></span>
                         </div>
 
                         <div class="mb-4">

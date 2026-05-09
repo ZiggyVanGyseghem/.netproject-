@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OuderraadWielewaal.Data;
@@ -21,13 +21,14 @@ namespace OuderraadWielewaal.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Haal alle bestellingen op die klaar staan om geserveerd te worden!
             var klaarBestellingen = await _context.Bestellingen
                 .Include(b => b.Gebruiker)
+                    .ThenInclude(g => g.Tafeltoewijzingen)
+                        .ThenInclude(tt => tt.Tafel)
                 .Include(b => b.Bestellijnen)
                     .ThenInclude(bl => bl.Product)
                         .ThenInclude(p => p.Productdetails)
-                .Where(b => b.Status == BestelStatus.KlaarVoorOphalen) // <-- Het magische filter
+                .Where(b => b.Status == BestelStatus.KlaarVoorOphalen)
                 .OrderBy(b => b.TijdstipBesteld)
                 .ToListAsync();
 

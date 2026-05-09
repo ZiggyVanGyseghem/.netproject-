@@ -1,31 +1,176 @@
-html {
-  font-size: 14px;
+:root {
+  --primary-color: #4F46E5;
+  --secondary-color: #10B981;
+  --bg-color: #F3F4F6;
+  --card-bg: #FFFFFF;
+  --text-main: #1F2937;
+  --text-muted: #6B7280;
+  --font-family: 'Inter', sans-serif;
+  --border-radius: 12px;
+  --transition-speed: 0.3s;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+html, body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  margin: 0;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* Navbar */
+.navbar {
+  background: rgba(31, 41, 55, 0.95) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+/* Cards */
+.card {
+  background-color: var(--card-bg);
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  overflow: hidden;
 }
 
-body {
-  margin-bottom: 60px;
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 1.25rem 1.5rem;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  transition: all var(--transition-speed);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.btn-primary:hover {
+  background-color: #4338CA;
+  border-color: #4338CA;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4);
+}
+
+.btn-success {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+.btn-success:hover {
+  background-color: #059669;
+  border-color: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4);
+}
+
+.btn-warning {
+  background-color: #F59E0B;
+  border-color: #F59E0B;
+  color: white;
+}
+.btn-warning:hover {
+  background-color: #D97706;
+  border-color: #D97706;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.4);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Forms */
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #D1D5DB;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Tables */
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table thead th {
+  background-color: #F9FAFB;
+  color: #374151;
+  font-weight: 600;
+  border-bottom: 2px solid #E5E7EB;
+  padding: 1rem;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+.table tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+/* Utilities */
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+.shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Special Badges */
+.badge {
+  padding: 0.4em 0.8em;
+  font-weight: 600;
+  border-radius: 9999px;
+  font-size: 0.85em;
+}
+.bg-success {
+  background-color: #D1FAE5 !important;
+  color: #065F46 !important;
+}
+.bg-info {
+  background-color: #DBEAFE !important;
+  color: #1E40AF !important;
+}
+.bg-secondary {
+  background-color: #F3F4F6 !important;
+  color: #374151 !important;
 }

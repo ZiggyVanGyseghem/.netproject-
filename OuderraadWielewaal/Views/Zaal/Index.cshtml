@@ -1,11 +1,11 @@
-﻿@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
+@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
 @{
     ViewData["Title"] = "Zaal Dashboard";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-primary">🏃 Zaal Dashboard (Bediening)</h1>
+        <h1 class="text-primary">Zaal Dashboard (Bediening)</h1>
         <span class="badge bg-primary text-white fs-6 blink">Wachten op Uitserveren</span>
     </div>
 
@@ -25,7 +25,13 @@
                 <div class="col">
                     <div class="card h-100 shadow border-primary">
                         <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between">
-                            <span class="fs-4">👉 Tafel @bestelling.GebruikerId</span>
+                            @{
+                                var tafelNummer = bestelling.Gebruiker.Tafeltoewijzingen
+                                    .OrderByDescending(tt => tt.TijdstipToegewezen)
+                                    .FirstOrDefault()?.Tafel?.Nummer;
+                                var tafelLabel = tafelNummer.HasValue ? $"Tafel {tafelNummer}" : bestelling.Gebruiker.UserName;
+                            }
+                            <span class="fs-4">👉 @tafelLabel</span>
                             <span class="fs-5">#@bestelling.Id</span>
                         </div>
 
@@ -46,7 +52,7 @@
                             <form asp-controller="Zaal" asp-action="MarkeerAlsAfgeleverd" method="post">
                                 <input type="hidden" name="id" value="@bestelling.Id" />
                                 <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold shadow-sm">
-                                    🤝 Afgeleverd aan Tafel
+                                    Markeer als Afgeleverd
                                 </button>
                             </form>
                         </div>

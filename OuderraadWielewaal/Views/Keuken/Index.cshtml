@@ -1,12 +1,12 @@
-﻿@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
+@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
 @{
     ViewData["Title"] = "Keuken Dashboard";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-danger">🍔 Keuken Dashboard</h1>
-        <span class="badge bg-danger text-white fs-6 blink">Hete Vuren Actief</span>
+        <h1>Keuken Dashboard</h1>
+        <span class="badge bg-danger text-white fs-6 blink">Live Updates Actief</span>
     </div>
 
     @if (!Model.Any())
@@ -30,7 +30,13 @@
                     <div class="col">
                         <div class="card h-100 shadow border-danger">
                             <div class="card-header bg-danger text-white fw-bold d-flex justify-content-between">
-                                <span class="fs-5">Tafel (Gebruiker @bestelling.GebruikerId)</span>
+                                @{
+                                    var tafelNummer = bestelling.Gebruiker.Tafeltoewijzingen
+                                        .OrderByDescending(tt => tt.TijdstipToegewezen)
+                                        .FirstOrDefault()?.Tafel?.Nummer;
+                                    var tafelLabel = tafelNummer.HasValue ? $"Tafel {tafelNummer}" : bestelling.Gebruiker.UserName;
+                                }
+                                <span class="fs-5">@tafelLabel</span>
                                 <span class="fs-5">#@bestelling.Id</span>
                             </div>
 
@@ -51,7 +57,7 @@
                                 <form asp-controller="Keuken" asp-action="MarkeerAlsKlaar" method="post">
                                     <input type="hidden" name="id" value="@bestelling.Id" />
                                     <button type="submit" class="btn btn-danger w-100 btn-lg fw-bold shadow-sm">
-                                        🔥 Snacks Klaar
+                                        Bestelling Gereed
                                     </button>
                                 </form>
                             </div>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OuderraadWielewaal.Models.Productdetail>
+@model IEnumerable<OuderraadWielewaal.Models.Productdetail>
     @using OuderraadWielewaal.Models
 
     @{
@@ -9,16 +9,16 @@
 
     <div class="container mt-4">
         <div class="alert alert-primary text-center shadow-sm" role="alert">
-            <h2 class="mb-0">📍 Je bestelt voor <strong>Tafel @ViewBag.TafelNummer</strong></h2>
+            <h2 class="mb-0">Je bestelt voor <strong>Tafel @ViewBag.TafelNummer</strong></h2>
         </div>
 
         <div class="d-flex justify-content-end mb-3">
-            <a asp-controller="Main" asp-action="Winkelmandje" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-warning shadow-sm btn-lg fw-bold">
-                🛒 Naar Winkelmandje
+            <a asp-controller="Main" asp-action="Winkelmandje" class="btn btn-warning shadow-sm btn-lg fw-bold">
+                Naar Winkelmandje
             </a>
         </div>
 
-        <h3 class="mt-5 border-bottom pb-2">🥤 Dranken</h3>
+        <h3 class="mt-5 border-bottom pb-2">Dranken</h3>
         <div class="row g-3">
             @foreach (var drank in dranken)
         {
@@ -30,7 +30,6 @@
 
                         <form asp-controller="Main" asp-action="VoegToeAanMandje" method="post">
                             <input type="hidden" name="productId" value="@drank.ProductId" />
-                            <input type="hidden" name="tafelId" value="@ViewBag.TafelNummer" />
 
                             <div class="input-group mt-3 mb-2">
                                 <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.nextElementSibling.stepDown()">-</button>
@@ -45,7 +44,7 @@
         }
         </div>
 
-        <h3 class="mt-5 border-bottom pb-2">🍿 Versnaperingen</h3>
+        <h3 class="mt-5 border-bottom pb-2">Versnaperingen</h3>
         <div class="row g-3 mb-5">
             @foreach (var snack in snacks)
         {
@@ -57,7 +56,6 @@
 
                         <form asp-controller="Main" asp-action="VoegToeAanMandje" method="post">
                             <input type="hidden" name="productId" value="@snack.ProductId" />
-                            <input type="hidden" name="tafelId" value="@ViewBag.TafelNummer" />
 
                             <div class="input-group mt-3 mb-2">
                                 <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.nextElementSibling.stepDown()">-</button>

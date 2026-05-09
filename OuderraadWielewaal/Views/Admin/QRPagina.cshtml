@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "QR Registratie";
+    var tafels = ViewBag.BeschikbareTafels as List<OuderraadWielewaal.Models.Tafel>;
+}
+
+<div class="container mt-5 text-center">
+    <h2>📱 Account Activatie Klaar</h2>
+    <p class="lead">Laat de medewerker of tafel deze QR-code scannen om zelf een gebruikersnaam en wachtwoord te kiezen.</p>
+
+    @if (tafels != null)
+    {
+        <div class="alert alert-info text-start mb-4 mx-auto" style="max-width: 500px;">
+            <strong>⚙️ Stap 1 (Admin):</strong> Koppel dit account aan een fysieke tafel:
+            <form asp-action="KoppelTafel" method="post" class="d-flex gap-2 mt-2">
+                <input type="hidden" name="code" value="@ViewBag.Code" />
+                <select name="tafelId" class="form-select">
+                    @foreach (var tafel in tafels)
+                    {
+                        <option value="@tafel.Id">Tafel @tafel.Nummer</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary fw-bold">Koppelen</button>
+            </form>
+        </div>
+    }
+
+    <div class="my-4">
+        <p class="fw-bold">Stap 2: Scan de QR-code</p>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=@System.Net.WebUtility.UrlEncode(ViewBag.ActivatieUrl)" alt="QR Code" class="img-fluid border border-3 rounded shadow" />
+    </div>
+
+    <div class="mb-4">
+        <p>Of geef deze link door:</p>
+        <code class="fs-6 bg-light p-2 rounded border d-inline-block">@ViewBag.ActivatieUrl</code>
+    </div>
+
+    <a asp-action="Gebruikers" class="btn btn-primary mt-2">Terug naar Overzicht</a>
+</div>

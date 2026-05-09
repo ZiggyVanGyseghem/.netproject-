@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
+@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
 @{
     ViewData["Title"] = "Bestelhistoriek";
 }
@@ -9,8 +9,8 @@
         <a asp-action="Index" class="btn btn-outline-secondary">← Terug naar Admin Menu</a>
     </div>
 
-    <div class="table-responsive shadow-sm bg-white rounded">
-        <table class="table table-hover align-middle mb-0">
+    <div class="table-responsive shadow-sm bg-white rounded p-3">
+        <table id="bestellingenTable" class="table table-hover align-middle mb-0">
             <thead class="table-dark">
                 <tr>
                     <th># ID</th>
@@ -20,31 +20,44 @@
                     <th>Totaalprijs</th>
                     <th>Status</th>
                     <th>Betaling</th>
+                    <th>Acties</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var bestelling in Model)
                 {
-                    double totaalPrijs = bestelling.Bestellijnen.Sum(bl => bl.Hoeveelheid * bl.Product.Productdetails.First().Prijs);
+                    double totaalPrijs = bestelling.Bestellijnen.Sum(bl => bl.Hoeveelheid * bl.Product.Productdetails.OrderByDescending(p=>p.Tijdstip).First().Prijs);
 
                     <tr>
                         <td><strong>@bestelling.Id</strong></td>
-                        <td>@bestelling.TijdstipBesteld.ToString("HH:mm")</td>
-                        <td>Tafel @bestelling.GebruikerId</td>
-                        <td>
-                            <ul class="list-unstyled mb-0 small">
-                                @foreach (var lijn in bestelling.Bestellijnen)
-                                {
-                                    <li>@lijn.Hoeveelheid x @lijn.Product.Productdetails.First().Naam</li>
-                                }
-                            </ul>
-                        </td>
+                        <td>@bestelling.TijdstipBesteld.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@bestelling.Gebruiker.UserName</td>
+                        <td>@bestelling.Bestellijnen.Sum(bl => bl.Hoeveelheid) items</td>
                         <td><strong>€ @totaalPrijs.ToString("0.00")</strong></td>
                         <td><span class="badge bg-secondary">@bestelling.Status</span></td>
                         <td><span class="badge bg-info">@bestelling.BetaalStatus</span></td>
+                        <td>
+                            <a asp-action="BestellingDetail" asp-route-id="@bestelling.Id" class="btn btn-sm btn-primary">🔍 Details</a>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#bestellingenTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/nl-NL.json"
+                },
+                "order": [[ 1, "desc" ]] // Sorteer standaard op tijdstip (nieuwste bovenaan)
+            });
+        });
+    </script>
+}

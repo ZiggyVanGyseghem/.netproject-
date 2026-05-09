@@ -34,6 +34,11 @@ namespace OuderraadWielewaal.Models
         [Required]
         public int Nummer { get; set; }
 
+        public bool Actief { get; set; } = false;
+
+        [MaxLength(255)]
+        public string? UniekeCode { get; set; }
+
         public ICollection<Tafeltoewijzing> Tafeltoewijzingen { get; set; } = new List<Tafeltoewijzing>();
     }
 

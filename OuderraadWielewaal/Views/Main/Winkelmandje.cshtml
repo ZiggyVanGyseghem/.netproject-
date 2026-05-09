@@ -1,16 +1,16 @@
-﻿@model List<OuderraadWielewaal.Models.WinkelmandItem>
+@model List<OuderraadWielewaal.Models.WinkelmandItem>
 
     @{
     ViewData["Title"] = "Jouw Winkelmandje";
     }
 
     <div class="container mt-4">
-        <h2 class="mb-4">🛒 Jouw Bestelling (Tafel @ViewBag.TafelNummer)</h2>
+        <h2 class="mb-4">Jouw Bestelling (Tafel @ViewBag.TafelNummer)</h2>
 
         @if (Model == null || !Model.Any())
     {
         <div class="alert alert-info">Je winkelmandje is nog leeg. Voeg snel iets lekkers toe!</div>
-        <a asp-controller="Main" asp-action="Menu" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-primary">Terug naar Menu</a>
+        <a asp-controller="Main" asp-action="Menu" class="btn btn-primary">Terug naar Menu</a>
     }
     else
     {
@@ -34,8 +34,8 @@
                         <td>@item.Aantal x</td>
                         <td><strong>€ @item.Subtotaal.ToString("0.00")</strong></td>
                         <td class="text-end">
-                            <a asp-controller="Main" asp-action="VerwijderUitMandje" asp-route-productId="@item.ProductId" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-sm btn-outline-danger" title="Verwijder dit item">
-                                🗑️ Verwijder
+                            <a asp-controller="Main" asp-action="VerwijderUitMandje" asp-route-productId="@item.ProductId" class="btn btn-sm btn-outline-danger" title="Verwijder dit item">
+                                Verwijder
                             </a>
                         </td>
                     </tr>
@@ -50,12 +50,11 @@
             </table>
         </div>
         <div class="d-flex justify-content-between mt-4">
-            <a asp-controller="Main" asp-action="Menu" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-outline-secondary">← Verder winkelen</a>
+            <a asp-controller="Main" asp-action="Menu" class="btn btn-outline-secondary">Verder winkelen</a>
 
             <form asp-controller="Main" asp-action="Afrekenen" method="post">
-                <input type="hidden" name="tafelId" value="@ViewBag.TafelNummer" />
                 <button type="submit" class="btn btn-success btn-lg fw-bold">
-                    Afrekenen (Plaats Bestelling) →
+                    Afrekenen (Plaats Bestelling)
                 </button>
             </form>
         </div>

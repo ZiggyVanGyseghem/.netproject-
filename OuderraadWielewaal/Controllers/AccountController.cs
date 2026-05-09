@@ -51,5 +51,59 @@ namespace OuderraadWielewaal.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Main");
         }
+
+        // 4. Registratie voltooien (QR Flow)
+        [HttpGet]
+        public IActionResult Activeer(string code)
+        {
+            if (string.IsNullOrEmpty(code)) return RedirectToAction("Index", "Main");
+            return View(new ActiveerViewModel { UniekeCode = code });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Activeer(ActiveerViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userManager = HttpContext.RequestServices.GetService(typeof(UserManager<Gebruiker>)) as UserManager<Gebruiker>;
+                var user = userManager.Users.FirstOrDefault(u => u.UniekeCode == model.UniekeCode);
+
+                if (user != null)
+                {
+                    // Gebruikersnaam wijzigen
+                    var setUserNameResult = await userManager.SetUserNameAsync(user, model.Gebruikersnaam);
+                    if (!setUserNameResult.Succeeded)
+                    {
+                        ModelState.AddModelError("", "Deze gebruikersnaam is al in gebruik of ongeldig.");
+                        return View(model);
+                    }
+
+                    // Wachtwoord resetten (verwijder oude, voeg nieuwe toe)
+                    await userManager.RemovePasswordAsync(user);
+                    var addPasswordResult = await userManager.AddPasswordAsync(user, model.Wachtwoord);
+
+                    if (addPasswordResult.Succeeded)
+                    {
+                        user.UniekeCode = null; // Code is gebruikt
+                        user.TijdstipGeactiveerd = System.DateTime.Now;
+                        await userManager.UpdateAsync(user);
+
+                        // Meteen inloggen
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToAction("Index", "Main");
+                    }
+
+                    foreach (var err in addPasswordResult.Errors)
+                    {
+                        ModelState.AddModelError("", err.Description);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Ongeldige of reeds gebruikte code.");
+                }
+            }
+            return View(model);
+        }
     }
 }

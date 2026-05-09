@@ -1,0 +1,14 @@
+@model string
+@{
+    ViewData["Title"] = "Tafel niet beschikbaar";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5 text-center">
+    <div class="card shadow border-danger p-5 mx-auto" style="max-width: 500px;">
+        <h2 class="fw-bold text-danger mt-3">Oeps!</h2>
+        <p class="lead mt-3">@Model</p>
+        <hr />
+        <p class="text-muted">Scan de QR-code op je tafel opnieuw, of vraag de bediening om hulp.</p>
+    </div>
+</div>

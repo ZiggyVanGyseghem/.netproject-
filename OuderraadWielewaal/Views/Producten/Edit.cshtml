@@ -1,0 +1,47 @@
+@model OuderraadWielewaal.Models.Productdetail
+@{
+    ViewData["Title"] = "Product Bewerken";
+}
+
+<div class="container mt-4">
+    <h2>✏️ Product Bewerken</h2>
+    <p class="text-muted">Wijzigingen hier slaan we op als een nieuwe prijs/naam-historie, zodat oude bestellingen altijd kloppen!</p>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="ProductId" />
+
+                    <div class="mb-3">
+                        <label asp-for="Naam" class="form-label fw-bold">Productnaam</label>
+                        <input asp-for="Naam" class="form-control" required />
+                        <span asp-validation-for="Naam" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Prijs" class="form-label fw-bold">Nieuwe Prijs (€)</label>
+                        <input asp-for="Prijs" type="number" step="0.01" class="form-control" required />
+                        <span asp-validation-for="Prijs" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ProductType" class="form-label fw-bold">Type</label>
+                        <select asp-for="ProductType" class="form-select" asp-items="Html.GetEnumSelectList<OuderraadWielewaal.Models.ProductType>()"></select>
+                        <span asp-validation-for="ProductType" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Annuleren</a>
+                        <button type="submit" class="btn btn-success fw-bold">Opslaan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

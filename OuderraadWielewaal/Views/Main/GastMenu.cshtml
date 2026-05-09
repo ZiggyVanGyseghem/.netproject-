@@ -1,0 +1,70 @@
+@using OuderraadWielewaal.Models
+@{
+    ViewData["Title"] = "Menu Bestellen";
+    var dranken = ViewBag.Dranken as List<Product>;
+    var snacks = ViewBag.Snacks as List<Product>;
+}
+
+<div class="container mt-4">
+    <div class="alert alert-primary text-center shadow-sm" role="alert">
+        <h2 class="mb-0">Je bestelt voor <strong>Tafel @ViewBag.TafelNummer</strong></h2>
+    </div>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a asp-controller="Main" asp-action="GastWinkelmandje" class="btn btn-warning shadow-sm btn-lg fw-bold">
+            Naar Winkelmandje
+        </a>
+    </div>
+
+    <h3 class="mt-5 border-bottom pb-2">Dranken</h3>
+    <div class="row g-3">
+        @foreach (var product in dranken)
+        {
+            var detail = product.Productdetails.OrderByDescending(pd => pd.Tijdstip).First();
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fs-4">@detail.Naam</h5>
+                        <p class="card-text text-muted fs-5">€ @detail.Prijs.ToString("0.00")</p>
+
+                        <form asp-controller="Main" asp-action="GastVoegToe" method="post">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <div class="input-group mt-3 mb-2">
+                                <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.nextElementSibling.stepDown()">-</button>
+                                <input type="number" name="aantal" class="form-control text-center fs-4 fw-bold" value="1" min="1" max="50">
+                                <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.previousElementSibling.stepUp()">+</button>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 btn-lg fw-bold">Toevoegen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h3 class="mt-5 border-bottom pb-2">Versnaperingen</h3>
+    <div class="row g-3 mb-5">
+        @foreach (var product in snacks)
+        {
+            var detail = product.Productdetails.OrderByDescending(pd => pd.Tijdstip).First();
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fs-4">@detail.Naam</h5>
+                        <p class="card-text text-muted fs-5">€ @detail.Prijs.ToString("0.00")</p>
+
+                        <form asp-controller="Main" asp-action="GastVoegToe" method="post">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <div class="input-group mt-3 mb-2">
+                                <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.nextElementSibling.stepDown()">-</button>
+                                <input type="number" name="aantal" class="form-control text-center fs-4 fw-bold" value="1" min="1" max="50">
+                                <button class="btn btn-outline-secondary fs-4 px-3" type="button" onclick="this.previousElementSibling.stepUp()">+</button>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 btn-lg fw-bold">Toevoegen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

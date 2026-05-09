@@ -1,4 +1,5 @@
-﻿@{
+@model OuderraadWielewaal.Models.Bestelling
+@{
     ViewData["Title"] = "Bedankt voor je bestelling!";
 }
 
@@ -6,12 +7,65 @@
     <div class="card shadow border-0 p-5">
         <h1 class="display-1 text-success mb-3">🎉</h1>
         <h2 class="fw-bold">Bestelling Ontvangen!</h2>
-        <p class="lead">Je bestelling <strong>#@ViewBag.BestellingId</strong> voor tafel <strong>@ViewBag.TafelNummer</strong> is succesvol doorgegeven aan de bar en keuken.</p>
+        <p class="lead">Je bestelling <strong>#@ViewBag.BestellingId</strong> (<strong>@ViewBag.TafelNummer</strong>).</p>
+
+        <div class="mt-5 p-4 bg-light rounded border">
+            <h4 class="mb-4">Live Bestel Status</h4>
+            
+            <div class="progress mb-3" style="height: 30px;">
+                <div id="statusProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: 25%; font-size: 1.1rem; font-weight: bold;">
+                    In de wachtrij
+                </div>
+            </div>
+
+            <p id="statusText" class="text-muted fs-5">We hebben je bestelling goed ontvangen. De bar/keuken gaat er zo mee aan de slag!</p>
+        </div>
 
         <div class="mt-4">
-            <a asp-action="Menu" asp-route-tafelId="@ViewBag.TafelNummer" class="btn btn-primary btn-lg">
-                Terug naar het menu
+            <a asp-action="Menu" class="btn btn-outline-primary btn-lg">
+                ← Terug naar het menu
             </a>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const bestellingId = @ViewBag.BestellingId;
+        const statusProgressBar = document.getElementById('statusProgressBar');
+        const statusText = document.getElementById('statusText');
+
+        function updateTracker() {
+            fetch(`/Main/BestelStatusTracker/${bestellingId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let status = data.status;
+                    
+                    if (status === 'InDeWachtrij') {
+                        statusProgressBar.style.width = '25%';
+                        statusProgressBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-warning';
+                        statusProgressBar.innerText = 'In de wachtrij';
+                        statusText.innerText = 'We hebben je bestelling goed ontvangen. De bar/keuken gaat er zo mee aan de slag!';
+                    } 
+                    else if (status === 'KlaarVoorOphalen') {
+                        statusProgressBar.style.width = '75%';
+                        statusProgressBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-info';
+                        statusProgressBar.innerText = 'Klaar voor ophalen!';
+                        statusText.innerText = 'Hoera! Je bestelling staat klaar bij de bar/keuken. Kom hem snel halen!';
+                    }
+                    else if (status === 'Afgeleverd') {
+                        statusProgressBar.style.width = '100%';
+                        statusProgressBar.className = 'progress-bar bg-success';
+                        statusProgressBar.innerText = 'Afgeleverd';
+                        statusText.innerText = 'Je bestelling is afgeleverd. Smakelijk en santé!';
+                    }
+                })
+                .catch(error => console.error('Fout bij ophalen status:', error));
+        }
+
+        // Check elke 5 seconden
+        setInterval(updateTracker, 5000);
+        // Direct een eerste check
+        updateTracker();
+    </script>
+}

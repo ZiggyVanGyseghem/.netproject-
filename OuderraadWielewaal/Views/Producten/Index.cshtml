@@ -1,0 +1,49 @@
+@model IEnumerable<OuderraadWielewaal.Models.Product>
+@{
+    ViewData["Title"] = "Assortiment Beheer";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>🛍️ Assortiment Beheer</h2>
+        <a asp-action="Create" class="btn btn-primary fw-bold">+ Nieuw Product</a>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="table-responsive shadow-sm bg-white rounded">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Naam</th>
+                    <th>Type</th>
+                    <th>Huidige Prijs</th>
+                    <th>Acties</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    var detail = product.Productdetails.OrderByDescending(pd => pd.Tijdstip).FirstOrDefault();
+                    if (detail != null)
+                    {
+                        <tr>
+                            <td><strong>@detail.Naam</strong></td>
+                            <td>@detail.ProductType</td>
+                            <td>€ @detail.Prijs.ToString("0.00")</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-warning">✏️ Bewerk</a>
+                                <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline" onsubmit="return confirm('Weet je zeker dat je dit product wilt verwijderen?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">🗑️ Verwijder</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,10 +1,10 @@
-﻿@{
+@{
     ViewData["Title"] = "Admin Beheerpaneel";
 }
 
 <div class="container mt-5">
     <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">⚙️ Admin Beheerpaneel</h1>
+        <h1 class="display-4 fw-bold">Admin Beheerpaneel</h1>
         <p class="lead text-muted">Welkom in de controlekamer. Wat wil je beheren?</p>
     </div>
 
@@ -13,7 +13,6 @@
         <div class="col-md-5 mb-4">
             <div class="card shadow h-100 border-primary" style="border-width: 3px;">
                 <div class="card-body text-center p-5">
-                    <h1 style="font-size: 4rem;">👥</h1>
                     <h3 class="card-title mt-3 fw-bold">Gebruikersbeheer</h3>
                     <p class="card-text text-muted mb-4">Maak nieuwe accounts aan voor de bar, keuken of bediening en beheer bestaande medewerkers.</p>
                     <a asp-controller="Admin" asp-action="Gebruikers" class="btn btn-primary btn-lg w-100 fw-bold">Ga naar Gebruikers</a>
@@ -24,10 +23,29 @@
         <div class="col-md-5 mb-4">
             <div class="card shadow h-100 border-success" style="border-width: 3px;">
                 <div class="card-body text-center p-5">
-                    <h1 style="font-size: 4rem;">📊</h1>
                     <h3 class="card-title mt-3 fw-bold">Bestelhistoriek</h3>
                     <p class="card-text text-muted mb-4">Bekijk alle geplaatste bestellingen, inclusief totaalbedragen, statussen en actuele voortgang.</p>
                     <a asp-controller="Admin" asp-action="Bestellingen" class="btn btn-success btn-lg w-100 fw-bold">Bekijk Bestellingen</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5 mb-4">
+            <div class="card shadow h-100 border-warning" style="border-width: 3px;">
+                <div class="card-body text-center p-5">
+                    <h3 class="card-title mt-3 fw-bold">Assortiment</h3>
+                    <p class="card-text text-muted mb-4">Beheer de menukaart. Voeg nieuwe dranken en versnaperingen toe of pas prijzen aan.</p>
+                    <a asp-controller="Producten" asp-action="Index" class="btn btn-warning btn-lg w-100 fw-bold">Beheer Assortiment</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5 mb-4">
+            <div class="card shadow h-100 border-info" style="border-width: 3px;">
+                <div class="card-body text-center p-5">
+                    <h3 class="card-title mt-3 fw-bold">Tafelbeheer</h3>
+                    <p class="card-text text-muted mb-4">Activeer of deactiveer tafels, beheer tafelnummers en druk QR-codes af voor de bezoekers.</p>
+                    <a asp-controller="Admin" asp-action="Tafels" class="btn btn-info btn-lg w-100 fw-bold text-white">Beheer Tafels</a>
                 </div>
             </div>
         </div>

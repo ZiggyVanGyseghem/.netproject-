@@ -1,0 +1,61 @@
+@model OuderraadWielewaal.Models.Bestelling
+@{
+    ViewData["Title"] = "Bestelling Details";
+    double totaalPrijs = Model.Bestellijnen.Sum(bl => bl.Hoeveelheid * bl.Product.Productdetails.OrderByDescending(p=>p.Tijdstip).First().Prijs);
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>🔍 Detail Bestelling #@Model.Id</h1>
+        <a asp-action="Bestellingen" class="btn btn-outline-secondary">← Terug naar Historiek</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-info">
+                <div class="card-header bg-info text-white fw-bold">Algemene Info</div>
+                <div class="card-body">
+                    <p><strong>Tafel:</strong> @Model.Gebruiker.UserName</p>
+                    <p><strong>Tijdstip:</strong> @Model.TijdstipBesteld.ToString("dd-MM-yyyy HH:mm")</p>
+                    <p><strong>Status:</strong> <span class="badge bg-secondary">@Model.Status</span></p>
+                    <p><strong>Betaling:</strong> <span class="badge bg-success">@Model.BetaalStatus</span></p>
+                    <hr />
+                    <h4 class="text-end">Totaal: € @totaalPrijs.ToString("0.00")</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white fw-bold">🛒 Producten</div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Prijs/st</th>
+                                    <th>Aantal</th>
+                                    <th>Subtotaal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var lijn in Model.Bestellijnen)
+                                {
+                                    var detail = lijn.Product.Productdetails.OrderByDescending(p=>p.Tijdstip).First();
+                                    var sub = detail.Prijs * lijn.Hoeveelheid;
+                                    <tr>
+                                        <td>@detail.Naam</td>
+                                        <td>€ @detail.Prijs.ToString("0.00")</td>
+                                        <td>@lijn.Hoeveelheid x</td>
+                                        <td><strong>€ @sub.ToString("0.00")</strong></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

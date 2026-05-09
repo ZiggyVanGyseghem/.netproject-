@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @using OuderraadWielewaal.Models
 @inject SignInManager<Gebruiker> SignInManager
 <!DOCTYPE html>
@@ -8,6 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - OuderraadWielewaal</title>
     <script type="importmap"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OuderraadWielewaal.styles.css" asp-append-version="true" />
@@ -28,7 +32,7 @@
                             {
                                 <li class="nav-item me-2">
                                     <a class="nav-link btn btn-outline-danger text-danger fw-bold px-3 py-1" asp-controller="Keuken" asp-action="Index">
-                                        🍔 Keuken Dashboard
+                                        Keuken Dashboard
                                     </a>
                                 </li>
                             }
@@ -37,7 +41,7 @@
                             {
                                 <li class="nav-item me-3">
                                     <a class="nav-link btn btn-outline-warning text-warning fw-bold px-3 py-1" asp-controller="Bar" asp-action="Index">
-                                        🍺 Bar Dashboard
+                                        Bar Dashboard
                                     </a>
                                 </li>
                             }
@@ -45,19 +49,28 @@
                             {
                                 <li class="nav-item me-2">
                                     <a class="nav-link btn btn-outline-primary text-primary fw-bold px-3 py-1" asp-controller="Zaal" asp-action="Index">
-                                        🏃 Zaal
+                                        Zaal Dashboard
+                                    </a>
+                                </li>
+                            }
+
+                            @if (!User.IsInRole("Keuken") && !User.IsInRole("Bar") && !User.IsInRole("Zaal") && !User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item me-3">
+                                    <a class="nav-link btn btn-warning text-dark fw-bold px-3 py-1" asp-controller="Main" asp-action="Winkelmandje">
+                                        Winkelmandje
                                     </a>
                                 </li>
                             }
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle fw-bold text-primary" href="#" id="adminMenu" role="button" data-bs-toggle="dropdown">
-                                    👤 Welkom, @User.Identity?.Name!
+                                    Welkom, @User.Identity?.Name!
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     @if (User.IsInRole("Administrator"))
                                     {
-                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">⚙️ Beheerpaneel</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Beheerpaneel</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     }
                                     <li>

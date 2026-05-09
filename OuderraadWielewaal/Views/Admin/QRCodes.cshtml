@@ -1,0 +1,46 @@
+@model IEnumerable<OuderraadWielewaal.Models.Tafel>
+@{
+    ViewData["Title"] = "QR-Codes Afdrukken";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>QR-Codes — Actieve Tafels</h1>
+        <div class="d-flex gap-2">
+            <a asp-action="Tafels" class="btn btn-outline-secondary">Terug</a>
+            <button class="btn btn-primary fw-bold" onclick="window.print()">Afdrukken</button>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning">
+            Er zijn geen actieve tafels. Activeer tafels via het <a asp-action="Tafels">Tafelbeheer</a>.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var tafel in Model)
+            {
+                var qrUrl = Url.Action("OpenTafel", "Main", new { code = tafel.UniekeCode }, Context.Request.Scheme);
+                <div class="col-md-3 col-sm-6 text-center">
+                    <div class="card shadow border-0 p-3">
+                        <h4 class="fw-bold mb-3">Tafel @tafel.Nummer</h4>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=@System.Net.WebUtility.UrlEncode(qrUrl)"
+                             alt="QR Tafel @tafel.Nummer"
+                             class="img-fluid mx-auto d-block mb-2 border rounded" />
+                        <small class="text-muted">Scan om te bestellen</small>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+@@media print {
+    .btn, nav, header, footer { display: none !important; }
+    .card { break-inside: avoid; }
+}
+</style>

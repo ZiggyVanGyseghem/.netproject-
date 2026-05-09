@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OuderraadWielewaal.Data;
@@ -23,6 +23,8 @@ namespace OuderraadWielewaal.Controllers
         {
             var openBestellingen = await _context.Bestellingen
                 .Include(b => b.Gebruiker)
+                    .ThenInclude(g => g.Tafeltoewijzingen)
+                        .ThenInclude(tt => tt.Tafel)
                 .Include(b => b.Bestellijnen)
                     .ThenInclude(bl => bl.Product)
                         .ThenInclude(p => p.Productdetails)

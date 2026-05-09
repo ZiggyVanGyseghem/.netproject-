@@ -1,0 +1,40 @@
+@model OuderraadWielewaal.ViewModels.ActiveerViewModel
+
+@{
+    ViewData["Title"] = "Account Activeren";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <h3 class="mb-4 text-center">🚀 Kies je Inloggegevens</h3>
+                <p class="text-muted text-center mb-4">Kies een gebruikersnaam en wachtwoord om in te loggen.</p>
+
+                <form asp-action="Activeer" method="post">
+                    <input type="hidden" asp-for="UniekeCode" />
+                    
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Gebruikersnaam" class="form-label fw-bold">Gebruikersnaam</label>
+                        <input asp-for="Gebruikersnaam" class="form-control" placeholder="Bijv. tafel_5 of jan_p" />
+                        <span asp-validation-for="Gebruikersnaam" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Wachtwoord" class="form-label fw-bold">Wachtwoord</label>
+                        <input asp-for="Wachtwoord" class="form-control" placeholder="••••••••" />
+                        <span asp-validation-for="Wachtwoord" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold">Klaar! Inloggen</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

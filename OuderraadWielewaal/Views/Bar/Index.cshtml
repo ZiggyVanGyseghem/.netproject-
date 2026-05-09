@@ -1,11 +1,11 @@
-﻿@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
+@model IEnumerable<OuderraadWielewaal.Models.Bestelling>
 @{
     ViewData["Title"] = "Bar Dashboard";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>🍺 Bar Dashboard</h1>
+        <h1>Bar Dashboard</h1>
         <span class="badge bg-warning text-dark fs-6 blink">Live Updates Actief</span>
     </div>
 
@@ -32,7 +32,13 @@
                     <div class="col">
                         <div class="card h-100 shadow border-warning">
                             <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between">
-                                <span class="fs-5">Tafel (Gebruiker @bestelling.GebruikerId)</span>
+                                @{
+                                    var tafelNummer = bestelling.Gebruiker.Tafeltoewijzingen
+                                        .OrderByDescending(tt => tt.TijdstipToegewezen)
+                                        .FirstOrDefault()?.Tafel?.Nummer;
+                                    var tafelLabel = tafelNummer.HasValue ? $"Tafel {tafelNummer}" : bestelling.Gebruiker.UserName;
+                                }
+                                <span class="fs-5">@tafelLabel</span>
                                 <span class="fs-5">#@bestelling.Id</span>
                             </div>
 
@@ -53,7 +59,7 @@
                                 <form asp-controller="Bar" asp-action="MarkeerAlsKlaar" method="post">
                                     <input type="hidden" name="id" value="@bestelling.Id" />
                                     <button type="submit" class="btn btn-success w-100 btn-lg fw-bold shadow-sm">
-                                        ✅ Drankjes Klaar
+                                        Drankjes Klaar
                                     </button>
                                 </form>
                             </div>

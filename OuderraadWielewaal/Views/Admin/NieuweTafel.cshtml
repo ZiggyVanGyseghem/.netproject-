@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "Nieuwe Tafel";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm p-4">
+                <h3 class="mb-4">🪑 Nieuwe Tafel Aanmaken</h3>
+
+                <form asp-action="NieuweTafel" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tafelnummer</label>
+                        <input type="number" name="nummer" class="form-control form-control-lg" placeholder="Bijv. 5" min="1" required />
+                        <div class="form-text">Het systeem genereert automatisch een unieke QR-code voor deze tafel.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Tafels" class="btn btn-outline-secondary">Annuleren</a>
+                        <button type="submit" class="btn btn-primary fw-bold">Aanmaken</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
