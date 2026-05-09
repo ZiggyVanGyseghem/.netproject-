@@ -61,6 +61,7 @@
                             @if (tafel.Actief && tafel.UniekeCode != null)
                             {
                                 <a asp-action="QRCodes" class="btn btn-sm btn-outline-primary">QR</a>
+                                <a asp-controller="Main" asp-action="OpenTafel" asp-route-code="@tafel.UniekeCode" target="_blank" class="btn btn-sm btn-outline-info">Bekijk Menu</a>
                             }
                         </td>
                     </tr>

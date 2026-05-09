@@ -92,15 +92,15 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
+    <main role="main" class="pb-3 flex-grow-1">
         <div class="container">
-            &copy; 2026 - OuderraadWielewaal - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="footer mt-auto py-4">
+        <div class="container text-center">
+            <span class="mb-0">&copy; 2026 Ouderraad Wielewaal &bull; <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacybeleid</a></span>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -16,6 +16,12 @@ html, body {
   color: var(--text-main);
   min-height: 100vh;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
 }
 
 /* Navbar */
@@ -174,3 +180,25 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #F3F4F6 !important;
   color: #374151 !important;
 }
+
+/* Footer */
+footer {
+  flex-shrink: 0;
+  background: rgba(31, 41, 55, 0.98) !important;
+  color: #9CA3AF !important;
+  padding: 2rem 0;
+  margin-top: auto !important;
+  position: relative !important;
+  width: 100%;
+}
+
+footer a {
+  color: white !important;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+footer a:hover {
+  color: var(--primary-color) !important;
+}
+.flex-grow-1 { flex-grow: 1 !important; }

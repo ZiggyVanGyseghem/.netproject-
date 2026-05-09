@@ -63,8 +63,18 @@ namespace OuderraadWielewaal.Controllers
         public async Task<IActionResult> GastMenu()
         {
             var tafelCode = HttpContext.Session.GetString("TafelCode");
-            if (string.IsNullOrEmpty(tafelCode))
+            var tafelId = HttpContext.Session.GetInt32("TafelId");
+
+            if (string.IsNullOrEmpty(tafelCode) || !tafelId.HasValue)
                 return RedirectToAction("Index");
+
+            // CHECK: Is de tafel nog steeds actief?
+            var tafel = await _context.Tafels.FindAsync(tafelId.Value);
+            if (tafel == null || !tafel.Actief)
+            {
+                HttpContext.Session.Clear();
+                return View("TafelFout", (object)"Deze tafel is gedeactiveerd door de beheerder.");
+            }
 
             var tafelNummer = HttpContext.Session.GetInt32("TafelNummer");
             ViewBag.TafelNummer = tafelNummer;
@@ -152,6 +162,10 @@ namespace OuderraadWielewaal.Controllers
         [HttpPost]
         public async Task<IActionResult> GastVoegToe(int productId, int aantal = 1)
         {
+            var tafelId = HttpContext.Session.GetInt32("TafelId");
+            var tafel = await _context.Tafels.FindAsync(tafelId);
+            if (tafel == null || !tafel.Actief) return RedirectToAction("Index");
+
             var product = await _context.Productdetails.FirstOrDefaultAsync(p => p.ProductId == productId);
             if (product == null) return NotFound();
 
@@ -204,6 +218,14 @@ namespace OuderraadWielewaal.Controllers
 
             if (mandje == null || !mandje.Any() || !tafelId.HasValue) 
                 return RedirectToAction("GastWinkelmandje");
+
+            // FINAL CHECK: Is de tafel nog actief voor we betaling starten?
+            var tafel = await _context.Tafels.FindAsync(tafelId.Value);
+            if (tafel == null || !tafel.Actief)
+            {
+                HttpContext.Session.Clear();
+                return View("TafelFout", (object)"Deze tafel is zojuist gedeactiveerd. Je kunt geen bestelling meer plaatsen.");
+            }
 
             // ACHTERGROND TRUC: Maak onzichtbare bezoeker
             var uniekeBezoekerNaam = $"Bezoeker_{Guid.NewGuid().ToString("N").Substring(0, 8)}";
