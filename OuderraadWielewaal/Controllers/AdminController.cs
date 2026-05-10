@@ -44,6 +44,8 @@ namespace OuderraadWielewaal.Controllers
         {
             var alleBestellingen = await _context.Bestellingen
                 .Include(b => b.Gebruiker)
+                    .ThenInclude(u => u.Tafeltoewijzingen)
+                        .ThenInclude(tt => tt.Tafel)
                 .Include(b => b.Bestellijnen)
                     .ThenInclude(bl => bl.Product)
                         .ThenInclude(p => p.Productdetails)
@@ -89,7 +91,7 @@ namespace OuderraadWielewaal.Controllers
                 await _roleManager.CreateAsync(new Rol { Name = "Tafel" });
             }
 
-            ViewBag.Rollen = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+            ViewBag.Rollen = new SelectList(await _roleManager.Roles.Where(r => r.Name != "Tafel").ToListAsync(), "Name", "Name");
             return View();
         }
 
@@ -99,7 +101,7 @@ namespace OuderraadWielewaal.Controllers
         {
             if (ModelState.IsValid)
             {
-                var uniekeCode = Guid.NewGuid().ToString();
+                var uniekeCode = Guid.NewGuid().ToString("N");
                 var nieuweGebruiker = new Gebruiker
                 {
                     UserName = uniekeCode, // Tijdelijke gebruikersnaam
@@ -146,7 +148,9 @@ namespace OuderraadWielewaal.Controllers
                 }
             }
 
-            var url = Url.Action("Activeer", "Account", new { code = code }, Request.Scheme);
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var actionUrl = Url.Action("Activeer", "Account", new { code = code });
+            var url = baseUrl + actionUrl;
             ViewBag.ActivatieUrl = url;
             ViewBag.Code = code;
             return View();
@@ -176,9 +180,9 @@ namespace OuderraadWielewaal.Controllers
 
         // 6. Verwijder een gebruiker (POST)
         [HttpPost]
-        public async Task<IActionResult> VerwijderGebruiker(string id)
+        public async Task<IActionResult> VerwijderGebruiker(int id)
         {
-            var gebruiker = await _userManager.FindByIdAsync(id);
+            var gebruiker = await _userManager.FindByIdAsync(id.ToString());
 
             if (gebruiker != null)
             {
@@ -189,6 +193,59 @@ namespace OuderraadWielewaal.Controllers
             }
 
             return RedirectToAction("Gebruikers");
+        }
+
+        // 6b. Gebruiker bewerken (GET)
+        [HttpGet]
+        public async Task<IActionResult> BewerkGebruiker(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null) return NotFound();
+
+            var rollen = await _userManager.GetRolesAsync(user);
+            var model = new EditUserViewModel
+            {
+                Id = user.Id,
+                Naam = user.Naam,
+                UserName = user.UserName,
+                Rol = rollen.FirstOrDefault() ?? ""
+            };
+
+            ViewBag.Rollen = new SelectList(await _roleManager.Roles.Where(r => r.Name != "Tafel").ToListAsync(), "Name", "Name", model.Rol);
+            return View(model);
+        }
+
+        // 6c. Gebruiker bewerken (POST)
+        [HttpPost]
+        public async Task<IActionResult> BewerkGebruiker(EditUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(model.Id.ToString());
+                if (user == null) return NotFound();
+
+                user.Naam = model.Naam;
+                user.UserName = model.UserName;
+
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    // Update rol
+                    var huidigeRollen = await _userManager.GetRolesAsync(user);
+                    await _userManager.RemoveFromRolesAsync(user, huidigeRollen);
+                    await _userManager.AddToRoleAsync(user, model.Rol);
+
+                    return RedirectToAction("Gebruikers");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+
+            ViewBag.Rollen = new SelectList(await _roleManager.Roles.Where(r => r.Name != "Tafel").ToListAsync(), "Name", "Name", model.Rol);
+            return View(model);
         }
 
         // 7. Tafelbeheer overzicht
@@ -265,12 +322,16 @@ namespace OuderraadWielewaal.Controllers
         }
 
         // 13. QR-codes overzicht (alleen actieve tafels)
-        public async Task<IActionResult> QRCodes()
+        public async Task<IActionResult> QRCodes(int? id)
         {
-            var activeTafels = await _context.Tafels
-                .Where(t => t.Actief)
-                .OrderBy(t => t.Nummer)
-                .ToListAsync();
+            var query = _context.Tafels.Where(t => t.Actief);
+            
+            if (id.HasValue)
+            {
+                query = query.Where(t => t.Id == id.Value);
+            }
+
+            var activeTafels = await query.OrderBy(t => t.Nummer).ToListAsync();
             return View(activeTafels);
         }
     }

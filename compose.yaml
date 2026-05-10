@@ -3,22 +3,44 @@ services:
     container_name: db
     image: mariadb
     ports:
-     - 3307:3306
+      - "3307:3306"
     volumes:
-     - ./db/config:/var/lib/mysql
-     - ./db/init:/docker-entrypoint-initdb.d
+      - ./db/config:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d
     environment:
-     - MARIADB_DATABASE=orw_bestellingen
-     - MARIADB_ROOT_PASSWORD=root
-     - TZ=Europe/Brussels
+      - MARIADB_DATABASE=orw_bestellingen
+      - MARIADB_ROOT_PASSWORD=root
+      - TZ=Europe/Brussels
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: OuderraadWielewaal/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Port=3306;Database=orw_bestellingen;Uid=root;Pwd=root;
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
   dbadmin:
     container_name: dbadmin
     image: phpmyadmin
     ports:
-     - 81:80
+      - "81:80"
     environment:
-     - PMA_HOST=db
+      - PMA_HOST=db
     depends_on:
-     - db
+      db:
+        condition: service_healthy
     restart: unless-stopped

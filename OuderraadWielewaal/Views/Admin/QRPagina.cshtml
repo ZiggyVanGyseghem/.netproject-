@@ -4,13 +4,13 @@
 }
 
 <div class="container mt-5 text-center">
-    <h2>📱 Account Activatie Klaar</h2>
+    <h2>Account Activatie Klaar</h2>
     <p class="lead">Laat de medewerker of tafel deze QR-code scannen om zelf een gebruikersnaam en wachtwoord te kiezen.</p>
 
     @if (tafels != null)
     {
         <div class="alert alert-info text-start mb-4 mx-auto" style="max-width: 500px;">
-            <strong>⚙️ Stap 1 (Admin):</strong> Koppel dit account aan een fysieke tafel:
+            <strong>Stap 1 (Admin):</strong> Koppel dit account aan een fysieke tafel:
             <form asp-action="KoppelTafel" method="post" class="d-flex gap-2 mt-2">
                 <input type="hidden" name="code" value="@ViewBag.Code" />
                 <select name="tafelId" class="form-select">
@@ -25,12 +25,28 @@
     }
 
     <div class="my-4">
-        <p class="fw-bold">Stap 2: Scan de QR-code</p>
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=@System.Net.WebUtility.UrlEncode(ViewBag.ActivatieUrl)" alt="QR Code" class="img-fluid border border-3 rounded shadow" />
+        <p class="fw-bold">Scan de QR-code</p>
+        @if (!string.IsNullOrEmpty(ViewBag.ActivatieUrl))
+        {
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=@System.Net.WebUtility.UrlEncode(ViewBag.ActivatieUrl)" 
+                 alt="QR Code" 
+                 class="img-fluid border border-3 rounded shadow" 
+                 onerror="this.style.display='none'; document.getElementById('qr-fallback').style.display='block';" />
+            
+            <div id="qr-fallback" style="display:none;" class="alert alert-warning mt-2">
+                De QR-code kon niet worden geladen. Gebruik de onderstaande link.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger">
+                Fout: Er kon geen activatie-URL worden gegenereerd.
+            </div>
+        }
     </div>
 
     <div class="mb-4">
-        <p>Of geef deze link door:</p>
+        <p>Directe link voor activatie:</p>
         <code class="fs-6 bg-light p-2 rounded border d-inline-block">@ViewBag.ActivatieUrl</code>
     </div>
 

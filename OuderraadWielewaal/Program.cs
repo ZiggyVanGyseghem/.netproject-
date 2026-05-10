@@ -67,31 +67,44 @@ app.MapControllerRoute(
 // --- START TESTDATA INJECTEREN (SEEDING) ---
 using (var scope = app.Services.CreateScope())
 {
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<OuderraadWielewaal.Models.Gebruiker>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<OuderraadWielewaal.Models.Rol>>();
-
-    // 1. Maak de rol 'Administrator' aan als die nog niet bestaat
-    if (!await roleManager.RoleExistsAsync("Administrator"))
+    var services = scope.ServiceProvider;
+    try
     {
-        await roleManager.CreateAsync(new OuderraadWielewaal.Models.Rol { Name = "Administrator" });
-    }
+        var context = services.GetRequiredService<AppDbContext>();
+        // Voeg dit toe: zorg dat de database bestaat en alle migraties zijn toegepast
+        await context.Database.MigrateAsync();
 
-    // 2. Maak een standaard beheerder aan als die nog niet bestaat
-    if (await userManager.FindByNameAsync("admin") == null)
-    {
-        var beheerder = new OuderraadWielewaal.Models.Gebruiker
+        var userManager = services.GetRequiredService<UserManager<OuderraadWielewaal.Models.Gebruiker>>();
+        var roleManager = services.GetRequiredService<RoleManager<OuderraadWielewaal.Models.Rol>>();
+
+        // 1. Maak de rol 'Administrator' aan als die nog niet bestaat
+        if (!await roleManager.RoleExistsAsync("Administrator"))
         {
-            UserName = "admin",
-            Naam = "Hoofdbeheerder Wielewaal"
-        };
-
-        // Wachtwoord is simpel voor lokaal testen (min. 4 tekens hadden we ingesteld)
-        var resultaat = await userManager.CreateAsync(beheerder, "1234");
-
-        if (resultaat.Succeeded)
-        {
-            await userManager.AddToRoleAsync(beheerder, "Administrator");
+            await roleManager.CreateAsync(new OuderraadWielewaal.Models.Rol { Name = "Administrator" });
         }
+
+        // 2. Maak een standaard beheerder aan als die nog niet bestaat
+        if (await userManager.FindByNameAsync("admin") == null)
+        {
+            var beheerder = new OuderraadWielewaal.Models.Gebruiker
+            {
+                UserName = "admin",
+                Naam = "Hoofdbeheerder Wielewaal"
+            };
+
+            // Wachtwoord is simpel voor lokaal testen (min. 4 tekens hadden we ingesteld)
+            var resultaat = await userManager.CreateAsync(beheerder, "1234");
+
+            if (resultaat.Succeeded)
+            {
+                await userManager.AddToRoleAsync(beheerder, "Administrator");
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating or seeding the database.");
     }
 }
 // --- EINDE TESTDATA INJECTEREN ---

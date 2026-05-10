@@ -57,11 +57,16 @@ namespace OuderraadWielewaal.Controllers
                     .ThenInclude(p => p.Productdetails)
                 .Include(bl => bl.Bestelling)
                     .ThenInclude(b => b.Gebruiker)
+                        .ThenInclude(u => u.Tafeltoewijzingen)
+                            .ThenInclude(tt => tt.Tafel)
                 .Where(bl => bl.Bestelling.BetaalStatus == BetaalStatus.Betaald)
                 .ToListAsync();
 
             var tafelUitgaven = bestellijnen
-                .GroupBy(bl => bl.Bestelling.Gebruiker.UserName)
+                .GroupBy(bl => {
+                    var tafel = bl.Bestelling.Gebruiker.Tafeltoewijzingen.FirstOrDefault()?.Tafel;
+                    return tafel != null ? $"Tafel {tafel.Nummer}" : bl.Bestelling.Gebruiker.UserName;
+                })
                 .Select(g => new
                 {
                     Tafel = g.Key,
